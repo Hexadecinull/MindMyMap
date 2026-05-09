@@ -1,0 +1,35 @@
+{
+  "manifest_version": 3,
+  "name": "MindMyMap",
+  "version": "1.0.0",
+  "description": "Open MindMyMap quickly from any page. Free, open-source, ad-free mind mapping.",
+  "icons": {
+    "16":  "icons/icon16.png",
+    "32":  "icons/icon32.png",
+    "48":  "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16":  "icons/icon16.png",
+      "32":  "icons/icon32.png",
+      "48":  "icons/icon48.png",
+      "128": "icons/icon128.png"
+    },
+    "default_title": "MindMyMap — Open mind map"
+  },
+  "permissions": [
+    "storage",
+    "tabs"
+  ],
+  "options_page": "options.html",
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  },
+  "homepage_url": "https://github.com/mindmymap/mindmymap"
+}

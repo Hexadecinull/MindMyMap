@@ -1,0 +1,52 @@
+# ── Default: normalise line endings to LF on commit ──────────
+* text=auto eol=lf
+
+# ── Explicitly text files ─────────────────────────────────────
+*.vue        text eol=lf
+*.js         text eol=lf
+*.mjs        text eol=lf
+*.cjs        text eol=lf
+*.ts         text eol=lf
+*.json       text eol=lf
+*.css        text eol=lf
+*.html       text eol=lf
+*.md         text eol=lf
+*.yml        text eol=lf
+*.yaml       text eol=lf
+*.php        text eol=lf
+*.sh         text eol=lf
+*.env*       text eol=lf
+.htaccess    text eol=lf
+.gitignore   text eol=lf
+.gitattributes text eol=lf
+
+# ── Binary files — never diff / merge ─────────────────────────
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.webp binary
+*.ico  binary
+*.icns binary
+*.woff binary
+*.woff2 binary
+*.ttf  binary
+*.eot  binary
+*.db   binary
+*.sqlite binary
+*.zip  binary
+*.tar.gz binary
+*.dmg  binary
+*.exe  binary
+
+# ── GitHub Linguist ───────────────────────────────────────────
+# Count Vue as the primary language; suppress vendor/generated
+web/public/static/js/mindmap.js  linguist-vendored
+web/public/static/js/purify.js   linguist-vendored
+web/public/static/js/qrcode.js   linguist-vendored
+web/src/assets/fonts/**          linguist-vendored
+desktop/node_modules/**          linguist-vendored
+extension/icons/**               linguist-generated
+
+# Make .vue files register as Vue
+*.vue linguist-language=Vue

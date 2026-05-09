@@ -1,0 +1,240 @@
+name: Release
+
+# Triggered by a version tag: git tag v1.2.3 && git push --tags
+# Builds:
+#   - Electron desktop apps (Win x64/arm64, macOS x64/arm64, Linux AppImage/deb/rpm)
+#   - Browser extension zip (Chrome MV3)
+# Then creates a GitHub Release and attaches all artifacts.
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write   # needed to create the GitHub Release
+
+jobs:
+  # ── Build the web dist first (embedded in release notes) ─────
+  build-web:
+    name: Build web dist
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - run: npm ci
+      - run: echo "AUTHORIZED_DOMAINS=" > .env
+      - run: npm run build:dist
+
+      - name: Zip web dist
+        run: |
+          cd dist
+          zip -r ../../release-artifacts/mindmymap-web-${{ github.ref_name }}.zip .
+        working-directory: web
+
+      - name: Upload web dist
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-dist
+          path: release-artifacts/
+
+  # ── Package browser extension ─────────────────────────────────
+  package-extension:
+    name: Package browser extension
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Zip extension
+        run: |
+          mkdir -p release-artifacts
+          cd extension
+          zip -r ../release-artifacts/mindmymap-extension-${{ github.ref_name }}.zip . \
+            --exclude "*.md" "*.git*"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: extension-zip
+          path: release-artifacts/
+
+  # ── Build Electron — Linux ────────────────────────────────────
+  desktop-linux:
+    name: Desktop (Linux)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: desktop
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: desktop/package-lock.json
+
+      - name: Install system deps
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y libopenjp2-tools rpm
+
+      - run: npm ci
+
+      - name: Build Linux packages
+        run: npm run build:linux
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Collect artifacts
+        run: |
+          mkdir -p ../../release-artifacts
+          find dist/ -name "*.AppImage" -o -name "*.deb" -o -name "*.rpm" \
+            | xargs -I{} cp {} ../../release-artifacts/
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: desktop-linux
+          path: release-artifacts/
+
+  # ── Build Electron — Windows ──────────────────────────────────
+  desktop-windows:
+    name: Desktop (Windows)
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: desktop
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: desktop/package-lock.json
+
+      - run: npm ci
+
+      - name: Build Windows installer
+        run: npm run build:win
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Collect artifacts
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path "..\..\release-artifacts"
+          Get-ChildItem -Path "dist\" -Include "*.exe","*.msi" -Recurse |
+            Copy-Item -Destination "..\..\release-artifacts\"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: desktop-windows
+          path: release-artifacts/
+
+  # ── Build Electron — macOS ────────────────────────────────────
+  desktop-macos:
+    name: Desktop (macOS)
+    runs-on: macos-latest
+    defaults:
+      run:
+        working-directory: desktop
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: desktop/package-lock.json
+
+      - run: npm ci
+
+      - name: Build macOS DMG
+        run: npm run build:mac
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Code-signing: set CSC_LINK / CSC_KEY_PASSWORD secrets if you have
+          # an Apple Developer certificate. Leave unset for unsigned builds.
+          CSC_IDENTITY_AUTO_DISCOVERY: false
+
+      - name: Collect artifacts
+        run: |
+          mkdir -p ../../release-artifacts
+          find dist/ -name "*.dmg" | xargs -I{} cp {} ../../release-artifacts/
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: desktop-macos
+          path: release-artifacts/
+
+  # ── Create GitHub Release ─────────────────────────────────────
+  release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    needs:
+      - build-web
+      - package-extension
+      - desktop-linux
+      - desktop-windows
+      - desktop-macos
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Gather all artifacts into one directory
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: all-artifacts
+          merge-multiple: true
+
+      - name: List release files
+        run: ls -lh all-artifacts/
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: "MindMyMap ${{ github.ref_name }}"
+          draft: false
+          prerelease: ${{ contains(github.ref_name, '-') }}
+          body: |
+            ## MindMyMap ${{ github.ref_name }}
+
+            Free, open-source, ad-free mind mapping — inspired by GitMind, built on Digimindmap by La Digitale.
+
+            ### 📦 Downloads
+
+            | Package | Platform |
+            |---|---|
+            | `mindmymap-web-*.zip` | Self-hosted web app (deploy to InfinityFree or any PHP host) |
+            | `mindmymap-extension-*.zip` | Browser extension (Chrome MV3 — load unpacked) |
+            | `*.AppImage` / `*.deb` / `*.rpm` | Linux desktop app |
+            | `*.exe` | Windows installer |
+            | `*.dmg` | macOS disk image |
+
+            ### 🚀 Web deployment (InfinityFree)
+            1. Download the `mindmymap-web-*.zip`
+            2. Extract and upload all contents to your `htdocs/` via FTP
+            3. Copy `.env.example` → `.env` and set `AUTHORIZED_DOMAINS` if needed
+            4. Done — no database setup required (SQLite auto-initialises on first request)
+
+            ### 📜 License
+            AGPL-3.0 — Based on [Digimindmap by La Digitale](https://ladigitale.dev/digimindmap/). Inspired by [GitMind](https://gitmind.com).
+          files: all-artifacts/*
+          fail_on_unmatched_files: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

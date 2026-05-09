@@ -1,0 +1,57 @@
+<?php
+
+session_start();
+
+require 'headers.php';
+
+if (!empty($_POST['id'])) {
+	require 'db.php';
+	$reponse = '';
+	$id = $_POST['id'];
+	if (isset($_SESSION['mindmymap'][$id]['reponse'])) {
+		$reponse = $_SESSION['mindmymap'][$id]['reponse'];
+	}
+	$stmt = $db->prepare('SELECT * FROM mindmymap_cartes WHERE url = :url');
+	if ($stmt->execute(array('url' => $id))) {
+		if ($carte = $stmt->fetchAll()) {
+			$admin = false;
+			if (count($carte, COUNT_NORMAL) > 0 && $carte[0]['reponse'] === $reponse) {
+				$admin = true;
+			}
+			$donnees = $carte[0]['donnees'];
+			if ($donnees !== '') {
+				$donnees = json_decode($donnees);
+			}
+			$digidrive = 0;
+			if (isset($_SESSION['mindmymap'][$id]['digidrive'])) {
+				$digidrive = $_SESSION['mindmymap'][$id]['digidrive'];
+			} else if (intval($carte[0]['digidrive']) === 1) {
+				$digidrive = 1;
+			}
+			$date = date('Y-m-d H:i:s');
+			$vues = 0;
+			if ($carte[0]['vues'] !== '') {
+				$vues = intval($carte[0]['vues']);
+			}
+			if ($admin === false) {
+				$vues = $vues + 1;
+			}
+			$stmt = $db->prepare('UPDATE mindmymap_cartes SET vues = :vues, derniere_visite = :derniere_visite WHERE url = :url');
+			if ($stmt->execute(array('vues' => $vues, 'derniere_visite' => $date, 'url' => $id))) {
+				echo json_encode(array('nom' => $carte[0]['nom'], 'donnees' => $donnees, 'vues' => $vues, 'admin' =>  $admin, 'digidrive' => $digidrive));
+			} else {
+				echo 'erreur';
+			}
+		} else {
+			echo 'contenu_inexistant';
+		}
+	} else {
+		echo 'erreur';
+	}
+	$db = null;
+	exit();
+} else {
+	exit('Requête invalide');
+}
+
+?>

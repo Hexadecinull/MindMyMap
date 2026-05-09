@@ -1,0 +1,41 @@
+{
+  "name": "mindmymap",
+  "version": "1.0.0",
+  "description": "Free, open-source, ad-less mind mapping tool — inspired by GitMind, built on Digimindmap by La Digitale",
+  "homepage": "https://mindmymap.ct.ws/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mindmymap/mindmymap.git"
+  },
+  "license": "AGPL-3.0",
+  "scripts": {
+    "dev": "vite",
+    "build:dist": "vite build --mode dist",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
+  },
+  "dependencies": {
+    "clipboard": "^2.0.11",
+    "destyle.css": "^2.0.0",
+    "file-saver": "^2.0.5",
+    "html2canvas": "^1.4.1",
+    "linkify-html": "^4.3.2",
+    "linkifyjs": "^4.3.2",
+    "pell": "^1.0.6",
+    "voca": "^1.4.1",
+    "vue": "^3.5.24",
+    "vue-i18n": "^10.0.8",
+    "vue-router": "^4.6.3"
+  },
+  "devDependencies": {
+    "@rushstack/eslint-patch": "^1.16.1",
+    "@vitejs/plugin-vue": "^6.0.4",
+    "@vue/eslint-config-prettier": "^10.2.0",
+    "eslint": "^10.0.2",
+    "eslint-plugin-vue": "^10.8.0",
+    "prettier": "^3.8.1",
+    "vite": "^7.3.1",
+    "vite-plugin-static-copy": "^3.2.0"
+  }
+}

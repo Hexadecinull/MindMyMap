@@ -1,0 +1,6 @@
+Options -Indexes
+
+<FilesMatch "\.(db|sqlite|sqlite3|db-shm|db-wal)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
