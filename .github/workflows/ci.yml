@@ -46,8 +46,8 @@ jobs:
           path: web/dist/
           retention-days: 7
 
-  lint-extension:
-    name: Validate extension manifest
+  validate-extension:
+    name: Validate extension
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -59,8 +59,33 @@ jobs:
               m = json.load(f)
           assert m['manifest_version'] == 3
           assert 'name' in m and 'version' in m
+          assert 'browser_specific_settings' in m
           print('manifest.json OK')
           "
+
+  validate-mobile:
+    name: Validate mobile (Capacitor)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - name: Validate capacitor.config.json
+        run: |
+          python3 -c "
+          import json
+          with open('capacitor.config.json') as f:
+              c = json.load(f)
+          assert 'appId' in c and 'appName' in c and 'webDir' in c
+          print('capacitor.config.json OK:', c['appId'])
+          "
+      - name: Check Capacitor CLI works
+        run: npx cap --version
 
   audit-desktop:
     name: Audit (desktop)
@@ -73,6 +98,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - run: npm ci
+      - run: npm ci --ignore-scripts
       - run: npm audit --audit-level=high
         continue-on-error: true

@@ -2,21 +2,16 @@
   "name": "mindmymap-monorepo",
   "version": "1.0.0",
   "private": true,
-  "description": "MindMyMap monorepo — web app, desktop app, and browser extension",
+  "description": "MindMyMap monorepo \u2014 web app, desktop app, and browser extension",
   "license": "AGPL-3.0",
   "scripts": {
-    "dev":            "npm run dev       --workspace=web",
-    "build":          "npm run build     --workspace=web",
-    "build:dist":     "npm run build:dist --workspace=web",
-    "lint":           "npm run lint      --workspace=web",
-    "desktop":        "npm start         --workspace=desktop",
-    "desktop:build":  "npm run build:all --workspace=desktop",
-    "prepare:all": "npm ci --workspace=web && npm ci --workspace=desktop"
+    "dev": "npm run dev       --prefix web",
+    "build": "npm run build     --prefix web",
+    "build:dist": "npm run build:dist --prefix web",
+    "lint": "npm run lint      --prefix web",
+    "desktop": "npm start         --prefix desktop",
+    "desktop:build": "npm run build:all --prefix desktop"
   },
-  "workspaces": [
-    "web",
-    "desktop"
-  ],
   "engines": {
     "node": ">=18"
   }
