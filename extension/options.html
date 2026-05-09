@@ -45,18 +45,19 @@
     </div>
   </div>
 
+  <script src="browser-shim.js"></script>
   <script>
     const serverInput = document.getElementById('server')
     const saveBtn = document.getElementById('save')
     const savedMsg = document.getElementById('saved-msg')
 
-    chrome.storage.sync.get(['serverUrl'], res => {
+    ext.storage.sync.get(['serverUrl'], res => {
       serverInput.value = res.serverUrl || 'https://mindmymap.ct.ws/'
     })
 
     saveBtn.addEventListener('click', () => {
       const url = serverInput.value.trim().replace(/\/?$/, '/')
-      chrome.storage.sync.set({ serverUrl: url }, () => {
+      ext.storage.sync.set({ serverUrl: url }, () => {
         savedMsg.classList.add('show')
         setTimeout(() => savedMsg.classList.remove('show'), 2000)
       })

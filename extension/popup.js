@@ -1,72 +1,68 @@
-/**
- * MindMyMap Browser Extension — Popup script
- * AGPL-3.0 | Based on Digimindmap by La Digitale | Inspired by GitMind
- */
-
+const ext = (typeof browser !== 'undefined') ? browser : chrome
 const DEFAULT_SERVER = 'https://mindmymap.ct.ws/'
 
 async function getServer () {
   return new Promise(resolve => {
-    chrome.storage.sync.get(['serverUrl'], res => {
-      resolve(res.serverUrl || DEFAULT_SERVER)
-    })
+    ext.storage.sync.get(['serverUrl'], res => resolve(res.serverUrl || DEFAULT_SERVER))
   })
 }
 
 async function getRecentMaps () {
   return new Promise(resolve => {
-    chrome.storage.sync.get(['recentMaps'], res => {
-      resolve(res.recentMaps || [])
-    })
+    ext.storage.sync.get(['recentMaps'], res => resolve(res.recentMaps || []))
   })
 }
 
 async function saveRecentMaps (maps) {
-  return new Promise(resolve => {
-    chrome.storage.sync.set({ recentMaps: maps }, resolve)
-  })
+  return new Promise(resolve => ext.storage.sync.set({ recentMaps: maps }, resolve))
 }
 
 async function checkServer (url) {
   try {
-    const controller = new AbortController()
-    const timer = setTimeout(() => controller.abort(), 4000)
-    const res = await fetch(url, { signal: controller.signal, mode: 'no-cors' })
-    clearTimeout(timer)
+    const ctrl = new AbortController()
+    setTimeout(() => ctrl.abort(), 4000)
+    await fetch(url, { signal: ctrl.signal, mode: 'no-cors' })
     return true
   } catch {
     return false
   }
 }
 
+function escapeHtml (str) {
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+}
+
+async function removeMap (id) {
+  const maps = await getRecentMaps()
+  await saveRecentMaps(maps.filter(m => m.id !== id))
+  init()
+}
+
 async function init () {
   const serverUrl = await getServer()
-  const urlInput = document.getElementById('server-url')
-  const openBtn = document.getElementById('open-app')
-  const mapList = document.getElementById('map-list')
+  const urlInput  = document.getElementById('server-url')
+  const openBtn   = document.getElementById('open-app')
+  const mapList   = document.getElementById('map-list')
   const statusDot = document.getElementById('status-dot')
-  const statusText = document.getElementById('status-text')
+  const statusText= document.getElementById('status-text')
 
   urlInput.value = serverUrl
-  openBtn.href = serverUrl
+  openBtn.href   = serverUrl
 
-  // Open in tab
   openBtn.addEventListener('click', e => {
     e.preventDefault()
-    chrome.tabs.create({ url: serverUrl })
+    ext.tabs.create({ url: serverUrl })
     window.close()
   })
 
-  // Save server
   document.getElementById('save-server').addEventListener('click', async () => {
     const url = urlInput.value.trim().replace(/\/?$/, '/')
-    chrome.storage.sync.set({ serverUrl: url }, () => {
+    ext.storage.sync.set({ serverUrl: url }, () => {
       openBtn.href = url
       checkConnectivity(url)
     })
   })
 
-  // Server status
   async function checkConnectivity (url) {
     statusDot.className = 'status-dot'
     statusText.textContent = 'Checking…'
@@ -76,9 +72,8 @@ async function init () {
   }
   checkConnectivity(serverUrl)
 
-  // Render recent maps
   const maps = await getRecentMaps()
-  if (maps.length === 0) return
+  if (!maps.length) return
 
   mapList.innerHTML = ''
   maps.slice(0, 8).forEach(map => {
@@ -90,8 +85,7 @@ async function init () {
       <span class="map-icon">🗺️</span>
       <span class="map-name">${escapeHtml(map.name)}</span>
       <span class="map-id">${map.id.slice(0, 6)}</span>
-      <span class="map-del" title="Remove from recent" data-id="${map.id}">✕</span>
-    `
+      <span class="map-del" data-id="${map.id}">✕</span>`
     item.addEventListener('click', e => {
       if (e.target.classList.contains('map-del')) {
         e.preventDefault()
@@ -99,23 +93,11 @@ async function init () {
         return
       }
       e.preventDefault()
-      chrome.tabs.create({ url: serverUrl + '#/m/' + map.id })
+      ext.tabs.create({ url: serverUrl + '#/m/' + map.id })
       window.close()
     })
     mapList.appendChild(item)
   })
-}
-
-async function removeMap (id) {
-  const maps = await getRecentMaps()
-  const filtered = maps.filter(m => m.id !== id)
-  await saveRecentMaps(filtered)
-  // Re-render
-  init()
-}
-
-function escapeHtml (str) {
-  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 }
 
 document.addEventListener('DOMContentLoaded', init)

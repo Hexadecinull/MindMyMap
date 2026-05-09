@@ -1,0 +1,22 @@
+{
+  "appId": "ws.ct.mindmymap",
+  "appName": "MindMyMap",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https",
+    "hostname": "mindmymap.ct.ws"
+  },
+  "android": {
+    "buildOptions": {
+      "releaseType": "APK"
+    }
+  },
+  "ios": {
+    "scheme": "MindMyMap"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0
+    }
+  }
+}
