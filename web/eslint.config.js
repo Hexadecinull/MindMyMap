@@ -2,7 +2,12 @@ import pluginVue from 'eslint-plugin-vue'
 
 export default [
   {
-    ignores: ['dist/**', 'node_modules/**', 'public/static/**']
+    ignores: [
+      'dist/**',
+      'node_modules/**',
+      'public/static/**',
+      '.eslintrc.cjs'
+    ]
   },
   ...pluginVue.configs['flat/recommended'],
   {
