@@ -1,129 +1,256 @@
 <template>
-	<div id="page">
-		<div id="accueil">
+  <div id="page">
+    <div id="accueil">
+      <!-- Nav -->
+      <nav id="accueil-nav">
+        <a
+          id="accueil-logo"
+          href="#"
+          :aria-label="'MindMyMap'"
+        >
+          <div class="logo-icon"><i
+            class="material-icons"
+            aria-hidden="true"
+          >hub</i></div>
+          <span class="logo-text">Mind<em>My</em>Map</span>
+        </a>
+        <div id="accueil-langues">
+          <span
+            class="bouton"
+            role="button"
+            :tabindex="modale === '' && $parent.$parent.message === '' ? 0 : -1"
+            title="Français"
+            aria-label="Français"
+            :class="{'selectionne': $parent.$parent.langue === 'fr'}"
+            @click="modifierLangue('fr')"
+            @keydown.enter.space.prevent="modifierLangue('fr')"
+          >FR</span>
+          <span
+            class="bouton"
+            role="button"
+            :tabindex="modale === '' && $parent.$parent.message === '' ? 0 : -1"
+            title="Italiano"
+            aria-label="Italiano"
+            :class="{'selectionne': $parent.$parent.langue === 'it'}"
+            @click="modifierLangue('it')"
+            @keydown.enter.space.prevent="modifierLangue('it')"
+          >IT</span>
+          <span
+            class="bouton"
+            role="button"
+            :tabindex="modale === '' && $parent.$parent.message === '' ? 0 : -1"
+            title="English"
+            aria-label="English"
+            :class="{'selectionne': $parent.$parent.langue === 'en'}"
+            @click="modifierLangue('en')"
+            @keydown.enter.space.prevent="modifierLangue('en')"
+          >EN</span>
+        </div>
+      </nav>
 
-			<!-- Nav -->
-			<nav id="accueil-nav">
-				<a id="accueil-logo" href="#" :aria-label="'MindMyMap'">
-					<div class="logo-icon"><i class="material-icons" aria-hidden="true">hub</i></div>
-					<span class="logo-text">Mind<em>My</em>Map</span>
-				</a>
-				<div id="accueil-langues">
-					<span class="bouton" role="button"
-						:tabindex="modale === '' && $parent.$parent.message === '' ? 0 : -1"
-						title="Français" aria-label="Français"
-						:class="{'selectionne': $parent.$parent.langue === 'fr'}"
-						@click="modifierLangue('fr')" @keydown.enter.space.prevent="modifierLangue('fr')">FR</span>
-					<span class="bouton" role="button"
-						:tabindex="modale === '' && $parent.$parent.message === '' ? 0 : -1"
-						title="Italiano" aria-label="Italiano"
-						:class="{'selectionne': $parent.$parent.langue === 'it'}"
-						@click="modifierLangue('it')" @keydown.enter.space.prevent="modifierLangue('it')">IT</span>
-					<span class="bouton" role="button"
-						:tabindex="modale === '' && $parent.$parent.message === '' ? 0 : -1"
-						title="English" aria-label="English"
-						:class="{'selectionne': $parent.$parent.langue === 'en'}"
-						@click="modifierLangue('en')" @keydown.enter.space.prevent="modifierLangue('en')">EN</span>
-				</div>
-			</nav>
+      <!-- Hero -->
+      <section id="accueil-hero">
+        <h1>{{ $t('heroTitle') }}<br><span class="highlight">{{ $t('heroTitleHighlight') }}</span></h1>
+        <p v-html="$t('heroCopy')" />
 
-			<!-- Hero -->
-			<section id="accueil-hero">
-				<h1>{{ $t('heroTitle') }}<br><span class="highlight">{{ $t('heroTitleHighlight') }}</span></h1>
-				<p v-html="$t('heroCopy')" />
+        <div id="accueil-cta">
+          <span
+            class="cta-primary"
+            role="button"
+            :tabindex="modale === '' && $parent.$parent.message === '' ? 0 : -1"
+            @click="ouvrirModaleCarte"
+            @keydown.enter.space.prevent="ouvrirModaleCarte"
+          >
+            {{ $t('creerCarte') }}
+          </span>
+          <a
+            class="cta-secondary"
+            href="https://github.com/mindmymap/mindmymap"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <i
+              class="material-icons"
+              aria-hidden="true"
+            >code</i>{{ $t('voirCode') }}
+          </a>
+        </div>
 
-				<div id="accueil-cta">
-					<span class="cta-primary" role="button"
-						:tabindex="modale === '' && $parent.$parent.message === '' ? 0 : -1"
-						@click="ouvrirModaleCarte" @keydown.enter.space.prevent="ouvrirModaleCarte">
-						{{ $t('creerCarte') }}
-					</span>
-					<a class="cta-secondary" href="https://github.com/mindmymap/mindmymap" target="_blank" rel="noreferrer">
-						<i class="material-icons" aria-hidden="true">code</i>{{ $t('voirCode') }}
-					</a>
-				</div>
+        <div id="accueil-badges">
+          <span class="badge"><i class="material-icons">lock_open</i>{{ $t('badge100Free') }}</span>
+          <span class="badge"><i class="material-icons">block</i>{{ $t('badgeNoAds') }}</span>
+          <span class="badge"><i class="material-icons">code</i>{{ $t('badgeOpenSource') }}</span>
+          <span class="badge"><i class="material-icons">person_off</i>{{ $t('badgeNoAccount') }}</span>
+        </div>
+      </section>
 
-				<div id="accueil-badges">
-					<span class="badge"><i class="material-icons">lock_open</i>{{ $t('badge100Free') }}</span>
-					<span class="badge"><i class="material-icons">block</i>{{ $t('badgeNoAds') }}</span>
-					<span class="badge"><i class="material-icons">code</i>{{ $t('badgeOpenSource') }}</span>
-					<span class="badge"><i class="material-icons">person_off</i>{{ $t('badgeNoAccount') }}</span>
-				</div>
-			</section>
+      <!-- Features -->
+      <div id="accueil-features">
+        <div
+          v-for="(f, i) in features"
+          :key="i"
+          class="feature-card"
+        >
+          <div class="fc-icon">
+            <i
+              class="material-icons"
+              aria-hidden="true"
+            >{{ f.icon }}</i>
+          </div>
+          <h3>{{ $t(f.titleKey) }}</h3>
+          <p>{{ $t(f.descKey) }}</p>
+        </div>
+      </div>
 
-			<!-- Features -->
-			<div id="accueil-features">
-				<div class="feature-card" v-for="(f, i) in features" :key="i">
-					<div class="fc-icon"><i class="material-icons" aria-hidden="true">{{ f.icon }}</i></div>
-					<h3>{{ $t(f.titleKey) }}</h3>
-					<p>{{ $t(f.descKey) }}</p>
-				</div>
-			</div>
+      <!-- Footer -->
+      <footer id="accueil-footer">
+        <p>
+          {{ new Date().getFullYear() }} — MindMyMap
+          <span class="sep">·</span>
+          <a
+            href="https://github.com/mindmymap/mindmymap"
+            target="_blank"
+            rel="noreferrer"
+          >{{ $t('codeSource') }}</a>
+          <span class="sep">·</span>
+          {{ $t('basedOn') }} <a
+            href="https://ladigitale.dev/digimindmap/"
+            target="_blank"
+            rel="noreferrer"
+          >Digimindmap by La Digitale</a>
+          <span class="sep">·</span>
+          {{ $t('inspiredBy') }} <a
+            href="https://gitmind.com"
+            target="_blank"
+            rel="noreferrer"
+          >GitMind</a>
+          <span class="sep">·</span>
+          <a
+            href="https://www.gnu.org/licenses/agpl-3.0.html"
+            target="_blank"
+            rel="noreferrer"
+          >AGPL-3.0</a>
+          <span class="sep">·</span>
+          v{{ version }}
+        </p>
+      </footer>
+    </div>
 
-			<!-- Footer -->
-			<footer id="accueil-footer">
-				<p>
-					{{ new Date().getFullYear() }} — MindMyMap
-					<span class="sep">·</span>
-					<a href="https://github.com/mindmymap/mindmymap" target="_blank" rel="noreferrer">{{ $t('codeSource') }}</a>
-					<span class="sep">·</span>
-					{{ $t('basedOn') }} <a href="https://ladigitale.dev/digimindmap/" target="_blank" rel="noreferrer">Digimindmap by La Digitale</a>
-					<span class="sep">·</span>
-					{{ $t('inspiredBy') }} <a href="https://gitmind.com" target="_blank" rel="noreferrer">GitMind</a>
-					<span class="sep">·</span>
-					<a href="https://www.gnu.org/licenses/agpl-3.0.html" target="_blank" rel="noreferrer">AGPL-3.0</a>
-					<span class="sep">·</span>
-					v{{ version }}
-				</p>
-			</footer>
+    <!-- Create map modal -->
+    <div
+      v-if="modale === 'carte'"
+      class="conteneur-modale"
+    >
+      <div
+        class="modale"
+        role="dialog"
+        aria-modal="true"
+      >
+        <header>
+          <span class="titre">{{ $t('nouvelleCarte') }}</span>
+          <span
+            class="fermer"
+            role="button"
+            tabindex="0"
+            :title="$t('fermer')"
+            :aria-label="$t('fermer')"
+            @click="fermerModaleCarte"
+            @keydown.enter.space.prevent="fermerModaleCarte"
+          >
+            <i
+              class="material-icons"
+              aria-hidden="true"
+            >close</i>
+          </span>
+        </header>
+        <div class="conteneur">
+          <div
+            class="contenu"
+            role="form"
+            :aria-label="$t('nouvelleCarte')"
+          >
+            <label for="nom-carte">{{ $t('nomCarte') }}</label>
+            <input
+              id="nom-carte"
+              type="text"
+              :value="nom"
+              :placeholder="$t('ideePrincipale')"
+              @input="nom = $event.target.value"
+              @keydown.enter="creerCarte"
+            >
 
-		</div>
+            <label for="question-secrete">{{ $t('questionSecrete') }}</label>
+            <select
+              id="question-secrete"
+              :value="question"
+              @change="question = $event.target.value"
+            >
+              <option
+                value=""
+                selected
+              >
+                —
+              </option>
+              <option
+                v-for="(item, index) in questions"
+                :key="'option_' + index"
+                :value="item"
+              >
+                {{ $t(item) }}
+              </option>
+            </select>
 
-		<!-- Create map modal -->
-		<div class="conteneur-modale" v-if="modale === 'carte'">
-			<div class="modale" role="dialog" aria-modal="true">
-				<header>
-					<span class="titre">{{ $t('nouvelleCarte') }}</span>
-					<span class="fermer" role="button" tabindex="0" :title="$t('fermer')" :aria-label="$t('fermer')"
-						@click="fermerModaleCarte" @keydown.enter.space.prevent="fermerModaleCarte">
-						<i class="material-icons" aria-hidden="true">close</i>
-					</span>
-				</header>
-				<div class="conteneur">
-					<div class="contenu" role="form" :aria-label="$t('nouvelleCarte')">
-						<label for="nom-carte">{{ $t('nomCarte') }}</label>
-						<input id="nom-carte" type="text" :value="nom" @input="nom = $event.target.value" @keydown.enter="creerCarte" :placeholder="$t('ideePrincipale')" />
+            <label for="reponse-secrete">{{ $t('reponseSecreteEdition') }}</label>
+            <div id="conteneur-reponse-secrete">
+              <input
+                id="reponse-secrete"
+                :type="reponseVisible ? 'text' : 'password'"
+                :value="reponse"
+                @input="reponse = $event.target.value"
+                @keydown.enter="creerCarte"
+              >
+              <span
+                class="icone"
+                role="button"
+                tabindex="0"
+                :title="reponseVisible ? $t('masquer') : $t('afficher')"
+                :aria-label="reponseVisible ? $t('masquer') : $t('afficher')"
+                @click="modifierReponseVisible(!reponseVisible)"
+                @keydown.enter.space.prevent="modifierReponseVisible(!reponseVisible)"
+              >
+                <i
+                  class="material-icons"
+                  aria-hidden="true"
+                >{{ reponseVisible ? 'visibility_off' : 'visibility' }}</i>
+              </span>
+            </div>
 
-						<label for="question-secrete">{{ $t('questionSecrete') }}</label>
-						<select id="question-secrete" :value="question" @change="question = $event.target.value">
-							<option value="" selected>—</option>
-							<option v-for="(item, index) in questions" :value="item" :key="'option_' + index">{{ $t(item) }}</option>
-						</select>
-
-						<label for="reponse-secrete">{{ $t('reponseSecreteEdition') }}</label>
-						<div id="conteneur-reponse-secrete">
-							<input id="reponse-secrete" :type="reponseVisible ? 'text' : 'password'"
-								:value="reponse" @input="reponse = $event.target.value" @keydown.enter="creerCarte" />
-							<span class="icone" role="button" tabindex="0"
-								:title="reponseVisible ? $t('masquer') : $t('afficher')"
-								:aria-label="reponseVisible ? $t('masquer') : $t('afficher')"
-								@click="modifierReponseVisible(!reponseVisible)"
-								@keydown.enter.space.prevent="modifierReponseVisible(!reponseVisible)">
-								<i class="material-icons" aria-hidden="true">{{ reponseVisible ? 'visibility_off' : 'visibility' }}</i>
-							</span>
-						</div>
-
-						<div class="actions">
-							<span class="bouton secondary" role="button" tabindex="0" @click="fermerModaleCarte" @keydown.enter.space.prevent="fermerModaleCarte">{{ $t('annuler') }}</span>
-							<span class="bouton" role="button" tabindex="0" @click="creerCarte" @keydown.enter.space.prevent="creerCarte">
-								<i class="material-icons" aria-hidden="true">add</i>{{ $t('creer') }}
-							</span>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+            <div class="actions">
+              <span
+                class="bouton secondary"
+                role="button"
+                tabindex="0"
+                @click="fermerModaleCarte"
+                @keydown.enter.space.prevent="fermerModaleCarte"
+              >{{ $t('annuler') }}</span>
+              <span
+                class="bouton"
+                role="button"
+                tabindex="0"
+                @click="creerCarte"
+                @keydown.enter.space.prevent="creerCarte"
+              >
+                <i
+                  class="material-icons"
+                  aria-hidden="true"
+                >add</i>{{ $t('creer') }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>

@@ -1,33 +1,60 @@
 <template>
-	<main>
-		<!-- Global loading overlay -->
-		<div id="conteneur-chargement" :class="{'transparent': chargementTransparent}" v-if="chargement || chargementTransparent">
-			<div id="chargement">
-				<div class="spinner"><div /><div /><div /><div /><div /><div /><div /><div /><div /><div /><div /><div /></div>
-			</div>
-		</div>
+  <main>
+    <!-- Global loading overlay -->
+    <div
+      v-if="chargement || chargementTransparent"
+      id="conteneur-chargement"
+      :class="{'transparent': chargementTransparent}"
+    >
+      <div id="chargement">
+        <div class="spinner">
+          <div /><div /><div /><div /><div /><div /><div /><div /><div /><div /><div /><div />
+        </div>
+      </div>
+    </div>
 
-		<!-- Global error modal -->
-		<div id="conteneur-message" class="conteneur-modale" v-if="message !== ''">
-			<div id="message" class="modale" role="dialog" aria-modal="true" aria-live="assertive">
-				<div class="conteneur">
-					<div class="contenu">
-						<div class="message" v-html="message" />
-						<div class="actions">
-							<span class="bouton" role="button" tabindex="0"
-								@click="fermerMessage"
-								@keydown.enter.space.prevent="fermerMessage">{{ $t('fermer') }}</span>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
+    <!-- Global error modal -->
+    <div
+      v-if="message !== ''"
+      id="conteneur-message"
+      class="conteneur-modale"
+    >
+      <div
+        id="message"
+        class="modale"
+        role="dialog"
+        aria-modal="true"
+        aria-live="assertive"
+      >
+        <div class="conteneur">
+          <div class="contenu">
+            <div
+              class="message"
+              v-html="message"
+            />
+            <div class="actions">
+              <span
+                class="bouton"
+                role="button"
+                tabindex="0"
+                @click="fermerMessage"
+                @keydown.enter.space.prevent="fermerMessage"
+              >{{ $t('fermer') }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-		<!-- Toast notifications -->
-		<div id="notification" aria-live="polite" aria-atomic="false" />
+    <!-- Toast notifications -->
+    <div
+      id="notification"
+      aria-live="polite"
+      aria-atomic="false"
+    />
 
-		<router-view />
-	</main>
+    <router-view />
+  </main>
 </template>
 
 <script>

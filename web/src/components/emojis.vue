@@ -1,30 +1,72 @@
 <template>
-	<div id="emojis">
-		<h5>{{ $t('emoticones') }}</h5>
-		<div class="categorie">
-			<span role="button" tabindex="0" v-for="(emoticone, indexEmoticone) in emoticones" @click="insererEmoji(emoticone)" @keydown.enter.space.prevent="insererEmoji(emoticone)" :key="'emoticone_' + indexEmoticone">{{ emoticone }}</span>
-		</div>
-		<h5>{{ $t('gestesEtCorps') }}</h5>
-		<div class="categorie">
-			<span role="button" tabindex="0" v-for="(geste, indexGeste) in gestes" @click="insererEmoji(geste)" @keydown.enter.space.prevent="insererEmoji(geste)" :key="'geste_' + indexGeste">{{ geste }}</span>
-		</div>
-		<h5>{{ $t('nature') }}</h5>
-		<div class="categorie">
-			<span role="button" tabindex="0" v-for="(nature, indexNature) in natures" @click="insererEmoji(nature)" @keydown.enter.space.prevent="insererEmoji(nature)" :key="'nature_' + indexNature">{{ nature }}</span>
-		</div>
-		<h5>{{ $t('aliments') }}</h5>
-		<div class="categorie">
-			<span role="button" tabindex="0" v-for="(aliment, indexAliment) in aliments" @click="insererEmoji(aliment)" @keydown.enter.space.prevent="insererEmoji(aliment)" :key="'aliment_' + indexAliment">{{ aliment }}</span>
-		</div>
-		<h5>{{ $t('objets') }}</h5>
-		<div class="categorie">
-			<span role="button" tabindex="0" v-for="(objet, indexObjet) in objets" @click="insererEmoji(objet)" @keydown.enter.space.prevent="insererEmoji(objet)" :key="'objet_' + indexObjet">{{ objet }}</span>
-		</div>
-		<h5>{{ $t('lieux') }}</h5>
-		<div class="categorie">
-			<span role="button" tabindex="0" v-for="(lieu, indexLieu) in lieux" @click="insererEmoji(lieu)" @keydown.enter.space.prevent="insererEmoji(lieu)" :key="'lieu_' + indexLieu">{{ lieu }}</span>
-		</div>
-	</div>
+  <div id="emojis">
+    <h5>{{ $t('emoticones') }}</h5>
+    <div class="categorie">
+      <span
+        v-for="(emoticone, indexEmoticone) in emoticones"
+        :key="'emoticone_' + indexEmoticone"
+        role="button"
+        tabindex="0"
+        @click="insererEmoji(emoticone)"
+        @keydown.enter.space.prevent="insererEmoji(emoticone)"
+      >{{ emoticone }}</span>
+    </div>
+    <h5>{{ $t('gestesEtCorps') }}</h5>
+    <div class="categorie">
+      <span
+        v-for="(geste, indexGeste) in gestes"
+        :key="'geste_' + indexGeste"
+        role="button"
+        tabindex="0"
+        @click="insererEmoji(geste)"
+        @keydown.enter.space.prevent="insererEmoji(geste)"
+      >{{ geste }}</span>
+    </div>
+    <h5>{{ $t('nature') }}</h5>
+    <div class="categorie">
+      <span
+        v-for="(nature, indexNature) in natures"
+        :key="'nature_' + indexNature"
+        role="button"
+        tabindex="0"
+        @click="insererEmoji(nature)"
+        @keydown.enter.space.prevent="insererEmoji(nature)"
+      >{{ nature }}</span>
+    </div>
+    <h5>{{ $t('aliments') }}</h5>
+    <div class="categorie">
+      <span
+        v-for="(aliment, indexAliment) in aliments"
+        :key="'aliment_' + indexAliment"
+        role="button"
+        tabindex="0"
+        @click="insererEmoji(aliment)"
+        @keydown.enter.space.prevent="insererEmoji(aliment)"
+      >{{ aliment }}</span>
+    </div>
+    <h5>{{ $t('objets') }}</h5>
+    <div class="categorie">
+      <span
+        v-for="(objet, indexObjet) in objets"
+        :key="'objet_' + indexObjet"
+        role="button"
+        tabindex="0"
+        @click="insererEmoji(objet)"
+        @keydown.enter.space.prevent="insererEmoji(objet)"
+      >{{ objet }}</span>
+    </div>
+    <h5>{{ $t('lieux') }}</h5>
+    <div class="categorie">
+      <span
+        v-for="(lieu, indexLieu) in lieux"
+        :key="'lieu_' + indexLieu"
+        role="button"
+        tabindex="0"
+        @click="insererEmoji(lieu)"
+        @keydown.enter.space.prevent="insererEmoji(lieu)"
+      >{{ lieu }}</span>
+    </div>
+  </div>
 </template>
 
 <script>

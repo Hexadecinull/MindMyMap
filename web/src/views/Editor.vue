@@ -1,314 +1,1069 @@
 <template>
-	<div id="page">
-		<div id="carte" :class="{'iframe': integration}">
+  <div id="page">
+    <div
+      id="carte"
+      :class="{'iframe': integration}"
+    >
+      <!-- ── TOP BAR ── -->
+      <header
+        v-if="!integration"
+        id="header"
+      >
+        <a
+          id="conteneur-logo"
+          :href="definirRacine()"
+          :title="$t('accueil')"
+          :aria-label="$t('accueil')"
+        >
+          <div class="logo-mark"><i
+            class="material-icons"
+            aria-hidden="true"
+          >hub</i></div>
+          <span class="logo-wordmark">Mind<em>My</em>Map</span>
+        </a>
+        <div
+          id="topbar-sep"
+          aria-hidden="true"
+        />
+        <span id="titre">{{ nom }}</span>
+        <div id="topbar-actions">
+          <!-- Save -->
+          <span
+            v-if="admin"
+            class="topbar-btn primary"
+            role="button"
+            :tabindex="definirTabIndex()"
+            :title="$t('enregistrer')"
+            :aria-label="$t('enregistrer')"
+            @click="enregistrer"
+            @keydown.enter.space.prevent="enregistrer"
+          >
+            <i
+              class="material-icons"
+              aria-hidden="true"
+            >save</i>{{ $t('enregistrer') }}
+          </span>
+          <!-- Share -->
+          <span
+            id="conteneur-partage"
+            class="topbar-btn"
+            role="button"
+            :tabindex="definirTabIndex()"
+            :title="$t('partager')"
+            :aria-label="$t('partager')"
+            :aria-haspopup="true"
+            :aria-expanded="menu"
+            @click="afficherMenuPartager"
+            @keydown.enter.space.prevent="afficherMenuPartager"
+          >
+            <i
+              class="material-icons"
+              aria-hidden="true"
+            >share</i>{{ $t('partager') }}
+          </span>
+          <!-- Settings (admin) / Login -->
+          <span
+            v-if="admin"
+            class="topbar-btn"
+            role="button"
+            :tabindex="definirTabIndex()"
+            :title="$t('parametres')"
+            :aria-label="$t('parametres')"
+            @click="ouvrirModaleCarte"
+            @keydown.enter.space.prevent="ouvrirModaleCarte"
+          >
+            <i
+              class="material-icons"
+              aria-hidden="true"
+            >settings</i>
+          </span>
+          <span
+            v-else
+            class="topbar-btn"
+            role="button"
+            :tabindex="definirTabIndex()"
+            :title="$t('seConnecter')"
+            :aria-label="$t('seConnecter')"
+            @click="ouvrirModaleConnexion"
+            @keydown.enter.space.prevent="ouvrirModaleConnexion"
+          >
+            <i
+              class="material-icons"
+              aria-hidden="true"
+            >lock_open</i>
+          </span>
+        </div>
+      </header>
 
-			<!-- ── TOP BAR ── -->
-			<header id="header" v-if="!integration">
-				<a id="conteneur-logo" :href="definirRacine()" :title="$t('accueil')" :aria-label="$t('accueil')">
-					<div class="logo-mark"><i class="material-icons" aria-hidden="true">hub</i></div>
-					<span class="logo-wordmark">Mind<em>My</em>Map</span>
-				</a>
-				<div id="topbar-sep" aria-hidden="true"></div>
-				<span id="titre">{{ nom }}</span>
-				<div id="topbar-actions">
-					<!-- Save -->
-					<span class="topbar-btn primary" role="button" :tabindex="definirTabIndex()" :title="$t('enregistrer')" :aria-label="$t('enregistrer')" @click="enregistrer" @keydown.enter.space.prevent="enregistrer" v-if="admin">
-						<i class="material-icons" aria-hidden="true">save</i>{{ $t('enregistrer') }}
-					</span>
-					<!-- Share -->
-					<span class="topbar-btn" role="button" :tabindex="definirTabIndex()" :title="$t('partager')" :aria-label="$t('partager')" :aria-haspopup="true" :aria-expanded="menu" @click="afficherMenuPartager" @keydown.enter.space.prevent="afficherMenuPartager" id="conteneur-partage">
-						<i class="material-icons" aria-hidden="true">share</i>{{ $t('partager') }}
-					</span>
-					<!-- Settings (admin) / Login -->
-					<span class="topbar-btn" role="button" :tabindex="definirTabIndex()" :title="$t('parametres')" :aria-label="$t('parametres')" @click="ouvrirModaleCarte" @keydown.enter.space.prevent="ouvrirModaleCarte" v-if="admin">
-						<i class="material-icons" aria-hidden="true">settings</i>
-					</span>
-					<span class="topbar-btn" role="button" :tabindex="definirTabIndex()" :title="$t('seConnecter')" :aria-label="$t('seConnecter')" @click="ouvrirModaleConnexion" @keydown.enter.space.prevent="ouvrirModaleConnexion" v-else>
-						<i class="material-icons" aria-hidden="true">lock_open</i>
-					</span>
-				</div>
-			</header>
+      <!-- ── LEFT SIDEBAR (tools) ── -->
+      <div
+        v-if="!integration"
+        id="outils"
+      >
+        <div id="conteneur-outils">
+          <!-- History -->
+          <div
+            v-if="admin"
+            class="outils communs"
+          >
+            <span
+              class="outil"
+              role="button"
+              :tabindex="definirTabIndex()"
+              :title="$t('defaire')"
+              :aria-label="$t('defaire')"
+              @click="executer('Undo')"
+              @keydown.enter.space.prevent="executer('Undo')"
+            ><i
+              class="material-icons"
+              aria-hidden="true"
+            >undo</i></span>
+            <span
+              class="outil"
+              role="button"
+              :tabindex="definirTabIndex()"
+              :title="$t('refaire')"
+              :aria-label="$t('refaire')"
+              @click="executer('Redo')"
+              @keydown.enter.space.prevent="executer('Redo')"
+            ><i
+              class="material-icons"
+              aria-hidden="true"
+            >redo</i></span>
+          </div>
 
-			<!-- ── LEFT SIDEBAR (tools) ── -->
-			<div id="outils" v-if="!integration">
-				<div id="conteneur-outils">
+          <!-- View -->
+          <div class="outils view">
+            <span
+              class="outil"
+              role="button"
+              :tabindex="definirTabIndex()"
+              :title="$t('zoomer')"
+              @click="executer('ZoomIn')"
+              @keydown.enter.space.prevent="executer('ZoomIn')"
+            ><i class="material-icons">zoom_in</i></span>
+            <span
+              class="outil"
+              role="button"
+              :tabindex="definirTabIndex()"
+              :title="$t('dezoomer')"
+              @click="executer('ZoomOut')"
+              @keydown.enter.space.prevent="executer('ZoomOut')"
+            ><i
+              class="material-icons"
+              aria-hidden="true"
+            >zoom_out</i></span>
+            <span
+              class="outil"
+              role="button"
+              :tabindex="definirTabIndex()"
+              :title="$t('centrer')"
+              @click="executer('Center')"
+              @keydown.enter.space.prevent="executer('Center')"
+            ><i
+              class="material-icons"
+              aria-hidden="true"
+            >center_focus_strong</i></span>
+          </div>
 
-					<!-- History -->
-					<div class="outils communs" v-if="admin">
-						<span class="outil" role="button" :tabindex="definirTabIndex()" :title="$t('defaire')" :aria-label="$t('defaire')" @click="executer('Undo')" @keydown.enter.space.prevent="executer('Undo')"><i class="material-icons" aria-hidden="true">undo</i></span>
-						<span class="outil" role="button" :tabindex="definirTabIndex()" :title="$t('refaire')" :aria-label="$t('refaire')" @click="executer('Redo')" @keydown.enter.space.prevent="executer('Redo')"><i class="material-icons" aria-hidden="true">redo</i></span>
-					</div>
+          <!-- Node editing -->
+          <div
+            v-if="admin"
+            class="outils noeud"
+          >
+            <span
+              class="outil"
+              role="button"
+              :tabindex="definirTabIndex()"
+              :title="$t('ajouterNoeud')"
+              @click="executer('InsertChild')"
+              @keydown.enter.space.prevent="executer('InsertChild')"
+            ><i
+              class="material-icons"
+              aria-hidden="true"
+            >add_circle_outline</i></span>
+            <span
+              class="outil"
+              role="button"
+              :tabindex="definirTabIndex()"
+              :title="$t('modifierItem')"
+              @click="modifierItem"
+              @keydown.enter.space.prevent="modifierItem"
+            ><i
+              class="material-icons"
+              aria-hidden="true"
+            >edit</i></span>
+            <span
+              v-if="niveau > 0"
+              class="outil supprimer"
+              role="button"
+              :tabindex="definirTabIndex()"
+              :title="$t('supprimerNoeud')"
+              @click="executer('Delete')"
+              @keydown.enter.space.prevent="executer('Delete')"
+            ><i
+              class="material-icons"
+              aria-hidden="true"
+            >delete</i></span>
+          </div>
 
-					<!-- View -->
-					<div class="outils view">
-						<span class="outil" role="button" :tabindex="definirTabIndex()" :title="$t('zoomer')" @click="executer('ZoomIn')" @keydown.enter.space.prevent="executer('ZoomIn')"><i class="material-icons">zoom_in</i></span>
-						<span class="outil" role="button" :tabindex="definirTabIndex()" :title="$t('dezoomer')" @click="executer('ZoomOut')" @keydown.enter.space.prevent="executer('ZoomOut')"><i class="material-icons" aria-hidden="true">zoom_out</i></span>
-						<span class="outil" role="button" :tabindex="definirTabIndex()" :title="$t('centrer')" @click="executer('Center')" @keydown.enter.space.prevent="executer('Center')"><i class="material-icons" aria-hidden="true">center_focus_strong</i></span>
-					</div>
+          <!-- Format -->
+          <div
+            v-if="admin"
+            class="outils format"
+          >
+            <span
+              class="outil"
+              role="button"
+              :tabindex="definirTabIndex()"
+              :title="$t('mettreGras')"
+              @click="modifierStyle('Bold')"
+              @keydown.enter.space.prevent="modifierStyle('Bold')"
+            ><i
+              class="material-icons"
+              aria-hidden="true"
+            >format_bold</i></span>
+            <span
+              class="outil"
+              role="button"
+              :tabindex="definirTabIndex()"
+              :title="$t('mettreItalique')"
+              @click="modifierStyle('Italic')"
+              @keydown.enter.space.prevent="modifierStyle('Italic')"
+            ><i
+              class="material-icons"
+              aria-hidden="true"
+            >format_italic</i></span>
+            <span
+              class="outil"
+              role="button"
+              :tabindex="definirTabIndex()"
+              :title="$t('souligner')"
+              @click="modifierStyle('Underline')"
+              @keydown.enter.space.prevent="modifierStyle('Underline')"
+            ><i
+              class="material-icons"
+              aria-hidden="true"
+            >format_underlined</i></span>
+            <span
+              class="outil"
+              role="button"
+              :tabindex="definirTabIndex()"
+              :title="$t('barrer')"
+              @click="modifierStyle('Strikethrough')"
+              @keydown.enter.space.prevent="modifierStyle('Strikethrough')"
+            ><i
+              class="material-icons"
+              aria-hidden="true"
+            >format_strikethrough</i></span>
+            <label
+              for="couleur"
+              class="couleur outil"
+              :tabindex="definirTabIndex()"
+              :title="$t('modifierCouleur')"
+              :aria-label="$t('modifierCouleur')"
+              @keydown.enter.space.prevent="activerInput('couleur')"
+            >
+              <i class="material-icons">colorize</i>
+              <input
+                id="couleur"
+                type="color"
+                :value="couleur"
+                @change="modifierCouleur($event.target.value)"
+              >
+            </label>
+            <select
+              :title="$t('ellipse')"
+              @change="modifierForme($event.target.value)"
+            >
+              <option
+                value="Ellipse"
+                :selected="forme === 'Ellipse'"
+              >
+                ⬭
+              </option>
+              <option
+                value="Box"
+                :selected="forme === 'Box'"
+              >
+                ▭
+              </option>
+              <option
+                v-if="niveau > 1"
+                value="Underline"
+                :selected="forme === 'Underline'"
+              >
+                —
+              </option>
+            </select>
+          </div>
 
-					<!-- Node editing -->
-					<div class="outils noeud" v-if="admin">
-						<span class="outil" role="button" :tabindex="definirTabIndex()" :title="$t('ajouterNoeud')" @click="executer('InsertChild')" @keydown.enter.space.prevent="executer('InsertChild')"><i class="material-icons" aria-hidden="true">add_circle_outline</i></span>
-						<span class="outil" role="button" :tabindex="definirTabIndex()" :title="$t('modifierItem')" @click="modifierItem" @keydown.enter.space.prevent="modifierItem"><i class="material-icons" aria-hidden="true">edit</i></span>
-						<span class="outil supprimer" role="button" :tabindex="definirTabIndex()" :title="$t('supprimerNoeud')" @click="executer('Delete')" @keydown.enter.space.prevent="executer('Delete')" v-if="niveau > 0"><i class="material-icons" aria-hidden="true">delete</i></span>
-					</div>
+          <!-- Emoji & Link -->
+          <div
+            v-if="admin"
+            class="outils emojis"
+          >
+            <span
+              class="outil"
+              role="button"
+              :tabindex="definirTabIndex()"
+              :title="$t('ajouterEmoji')"
+              @click="afficherEmojis"
+              @keydown.enter.space.prevent="afficherEmojis"
+            ><i
+              class="material-icons"
+              aria-hidden="true"
+            >insert_emoticon</i></span>
+            <span
+              v-if="emoji !== '' && emoji !== null"
+              class="outil supprimer"
+              role="button"
+              :tabindex="definirTabIndex()"
+              :title="$t('supprimerEmoji')"
+              @click="modifierEmoji('')"
+              @keydown.enter.space.prevent="modifierEmoji('')"
+            ><i
+              class="material-icons"
+              aria-hidden="true"
+            >block</i></span>
+          </div>
 
-					<!-- Format -->
-					<div class="outils format" v-if="admin">
-						<span class="outil" role="button" :tabindex="definirTabIndex()" :title="$t('mettreGras')" @click="modifierStyle('Bold')" @keydown.enter.space.prevent="modifierStyle('Bold')"><i class="material-icons" aria-hidden="true">format_bold</i></span>
-						<span class="outil" role="button" :tabindex="definirTabIndex()" :title="$t('mettreItalique')" @click="modifierStyle('Italic')" @keydown.enter.space.prevent="modifierStyle('Italic')"><i class="material-icons" aria-hidden="true">format_italic</i></span>
-						<span class="outil" role="button" :tabindex="definirTabIndex()" :title="$t('souligner')" @click="modifierStyle('Underline')" @keydown.enter.space.prevent="modifierStyle('Underline')"><i class="material-icons" aria-hidden="true">format_underlined</i></span>
-						<span class="outil" role="button" :tabindex="definirTabIndex()" :title="$t('barrer')" @click="modifierStyle('Strikethrough')" @keydown.enter.space.prevent="modifierStyle('Strikethrough')"><i class="material-icons" aria-hidden="true">format_strikethrough</i></span>
-						<label for="couleur" class="couleur outil" :tabindex="definirTabIndex()" :title="$t('modifierCouleur')" :aria-label="$t('modifierCouleur')" @keydown.enter.space.prevent="activerInput('couleur')">
-							<i class="material-icons">colorize</i>
-							<input id="couleur" type="color" :value="couleur" @change="modifierCouleur($event.target.value)">
-						</label>
-						<select @change="modifierForme($event.target.value)" :title="$t('ellipse')">
-							<option value="Ellipse" :selected="forme === 'Ellipse'">⬭</option>
-							<option value="Box" :selected="forme === 'Box'">▭</option>
-							<option value="Underline" :selected="forme === 'Underline'" v-if="niveau > 1">—</option>
-						</select>
-					</div>
+          <div
+            v-if="admin && niveau > 0"
+            class="outils lien"
+          >
+            <span
+              class="outil"
+              role="button"
+              :tabindex="definirTabIndex()"
+              :title="$t('ajouterLien')"
+              @click="ajouterLien"
+              @keydown.enter.space.prevent="ajouterLien"
+            ><i
+              class="material-icons"
+              aria-hidden="true"
+            >add_link</i></span>
+            <span
+              v-if="lien !== '' && lien !== null"
+              class="outil supprimer"
+              role="button"
+              :tabindex="definirTabIndex()"
+              :title="$t('supprimerLien')"
+              @click="supprimerLien"
+              @keydown.enter.space.prevent="supprimerLien"
+            ><i
+              class="material-icons"
+              aria-hidden="true"
+            >link_off</i></span>
+          </div>
 
-					<!-- Emoji & Link -->
-					<div class="outils emojis" v-if="admin">
-						<span class="outil" role="button" :tabindex="definirTabIndex()" :title="$t('ajouterEmoji')" @click="afficherEmojis" @keydown.enter.space.prevent="afficherEmojis"><i class="material-icons" aria-hidden="true">insert_emoticon</i></span>
-						<span class="outil supprimer" role="button" :tabindex="definirTabIndex()" :title="$t('supprimerEmoji')" @click="modifierEmoji('')" @keydown.enter.space.prevent="modifierEmoji('')" v-if="emoji !== '' && emoji !== null"><i class="material-icons" aria-hidden="true">block</i></span>
-					</div>
+          <!-- Status -->
+          <div
+            v-if="admin"
+            class="outils statut"
+          >
+            <span
+              v-if="statut !== 'yes'"
+              class="outil"
+              role="button"
+              :tabindex="definirTabIndex()"
+              :title="$t('modifierStatut')"
+              @click="modifierStatut('yes')"
+              @keydown.enter.space.prevent="modifierStatut('yes')"
+            ><i
+              class="material-icons"
+              aria-hidden="true"
+            >done</i></span>
+            <span
+              v-if="statut !== 'no'"
+              class="outil"
+              role="button"
+              :tabindex="definirTabIndex()"
+              :title="$t('modifierStatut')"
+              @click="modifierStatut('no')"
+              @keydown.enter.space.prevent="modifierStatut('no')"
+            ><i
+              class="material-icons"
+              aria-hidden="true"
+            >close</i></span>
+            <span
+              v-if="statut === 'yes' || statut === 'no'"
+              class="outil supprimer"
+              role="button"
+              :tabindex="definirTabIndex()"
+              :title="$t('annulerStatut')"
+              @click="modifierStatut('')"
+              @keydown.enter.space.prevent="modifierStatut('')"
+            ><i
+              class="material-icons"
+              aria-hidden="true"
+            >block</i></span>
+          </div>
 
-					<div class="outils lien" v-if="admin && niveau > 0">
-						<span class="outil" role="button" :tabindex="definirTabIndex()" :title="$t('ajouterLien')" @click="ajouterLien" @keydown.enter.space.prevent="ajouterLien"><i class="material-icons" aria-hidden="true">add_link</i></span>
-						<span class="outil supprimer" role="button" :tabindex="definirTabIndex()" :title="$t('supprimerLien')" @click="supprimerLien" @keydown.enter.space.prevent="supprimerLien" v-if="lien !== '' && lien !== null"><i class="material-icons" aria-hidden="true">link_off</i></span>
-					</div>
+          <!-- Notes & Help -->
+          <div class="outils notes">
+            <span
+              class="outil"
+              role="button"
+              :tabindex="definirTabIndex()"
+              :title="$t('afficherNotes')"
+              @click="afficherNotes('icone')"
+              @keydown.enter.space.prevent="afficherNotes('icone')"
+            ><i
+              class="material-icons"
+              aria-hidden="true"
+            >speaker_notes</i></span>
+          </div>
+          <div
+            v-if="admin"
+            class="outils aide"
+          >
+            <span
+              class="outil"
+              role="button"
+              :tabindex="definirTabIndex()"
+              :title="$t('afficherRaccourcis')"
+              @click="ouvrirModaleAide"
+              @keydown.enter.space.prevent="ouvrirModaleAide"
+            ><i
+              class="material-icons"
+              aria-hidden="true"
+            >help_outline</i></span>
+          </div>
+        </div>
+      </div>
 
-					<!-- Status -->
-					<div class="outils statut" v-if="admin">
-						<span class="outil" role="button" :tabindex="definirTabIndex()" :title="$t('modifierStatut')" @click="modifierStatut('yes')" @keydown.enter.space.prevent="modifierStatut('yes')" v-if="statut !== 'yes'"><i class="material-icons" aria-hidden="true">done</i></span>
-						<span class="outil" role="button" :tabindex="definirTabIndex()" :title="$t('modifierStatut')" @click="modifierStatut('no')" @keydown.enter.space.prevent="modifierStatut('no')" v-if="statut !== 'no'"><i class="material-icons" aria-hidden="true">close</i></span>
-						<span class="outil supprimer" role="button" :tabindex="definirTabIndex()" :title="$t('annulerStatut')" @click="modifierStatut('')" @keydown.enter.space.prevent="modifierStatut('')" v-if="statut === 'yes' || statut === 'no'"><i class="material-icons" aria-hidden="true">block</i></span>
-					</div>
+      <!-- ── CANVAS ── -->
+      <div id="conteneur">
+        <ul
+          id="port"
+          aria-live="polite"
+        />
+      </div>
 
-					<!-- Notes & Help -->
-					<div class="outils notes">
-						<span class="outil" role="button" :tabindex="definirTabIndex()" :title="$t('afficherNotes')" @click="afficherNotes('icone')" @keydown.enter.space.prevent="afficherNotes('icone')"><i class="material-icons" aria-hidden="true">speaker_notes</i></span>
-					</div>
-					<div class="outils aide" v-if="admin">
-						<span class="outil" role="button" :tabindex="definirTabIndex()" :title="$t('afficherRaccourcis')" @click="ouvrirModaleAide" @keydown.enter.space.prevent="ouvrirModaleAide"><i class="material-icons" aria-hidden="true">help_outline</i></span>
-					</div>
-				</div>
-			</div>
+      <!-- ── SHARE DROPDOWN ── -->
+      <div
+        v-if="menu"
+        id="menu-partager"
+        role="menu"
+        aria-labelledby="conteneur-partage"
+      >
+        <div id="conteneur-partager">
+          <label>{{ $t('lienEtCodeQR') }}</label>
+          <div
+            id="copier-lien"
+            class="copier"
+          >
+            <input
+              type="text"
+              disabled
+              :value="definirRacine() + '#/m/' + id"
+            >
+            <span
+              class="icone lien"
+              role="button"
+              :tabindex="menu ? 0 : -1"
+              :title="$t('copierLien')"
+              :aria-label="$t('copierLien')"
+              @keydown.enter.space.prevent="copierLien"
+            ><i
+              class="material-icons"
+              aria-hidden="true"
+            >content_copy</i></span>
+            <span
+              class="icone codeqr"
+              role="button"
+              :tabindex="menu ? 0 : -1"
+              :title="$t('afficherCodeQR')"
+              :aria-label="$t('afficherCodeQR')"
+              @click="afficherCodeQR"
+              @keydown.enter.space.prevent="afficherCodeQR"
+            ><i
+              class="material-icons"
+              aria-hidden="true"
+            >qr_code</i></span>
+          </div>
+          <label>{{ $t('codeIntegration') }}</label>
+          <div
+            id="copier-iframe"
+            class="copier"
+          >
+            <input
+              type="text"
+              disabled
+              :value="'<iframe src=&quot;' + definirRacine() + '#/m/' + id + '&quot; allowfullscreen frameborder=&quot;0&quot; width=&quot;100%&quot; height=&quot;500&quot;></iframe>'"
+            >
+            <span
+              class="icone"
+              role="button"
+              :tabindex="menu ? 0 : -1"
+              :title="$t('copierCode')"
+              :aria-label="$t('copierCode')"
+              @keydown.enter.space.prevent="copierIframe"
+            ><i
+              class="material-icons"
+              aria-hidden="true"
+            >content_copy</i></span>
+          </div>
+          <label>{{ $t('exporterImage') }}</label>
+          <span
+            class="bouton"
+            role="button"
+            :tabindex="menu ? 0 : -1"
+            @click="exporterImage"
+            @keydown.enter.space.prevent="exporterImage"
+          >{{ $t('exporter') }}</span>
+          <label>{{ $t('exporterTexte') }}</label>
+          <span
+            class="bouton"
+            role="button"
+            :tabindex="menu ? 0 : -1"
+            @click="exporterTexte"
+            @keydown.enter.space.prevent="exporterTexte"
+          >{{ $t('exporter') }}</span>
+          <p class="credits">
+            {{ $t('creeeAvec') }}<a
+              href="https://github.com/mindmymap/mindmymap"
+              target="_blank"
+              rel="noreferrer"
+            ><u>MindMyMap</u></a>
+          </p>
+        </div>
+      </div>
 
-			<!-- ── CANVAS ── -->
-			<div id="conteneur">
-				<ul id="port" aria-live="polite" />
-			</div>
+      <!-- ── NOTES PANEL ── -->
+      <div
+        v-if="notes"
+        id="notes"
+        class="menu droite"
+        role="menu"
+      >
+        <header>
+          <span class="titre">{{ $t('notesItem') }}</span>
+          <span
+            class="fermer"
+            role="button"
+            :tabindex="notes ? 0 : -1"
+            :title="$t('fermer')"
+            :aria-label="$t('fermer')"
+            @click="fermerNotes"
+            @keydown.enter.space.prevent="fermerNotes"
+          ><i
+            class="material-icons"
+            aria-hidden="true"
+          >close</i></span>
+        </header>
+        <div class="conteneur">
+          <div
+            v-if="admin"
+            class="contenu"
+          >
+            <div id="texte" />
+            <input
+              id="couleur-texte"
+              type="color"
+              value="#000000"
+              style="display:none"
+            >
+          </div>
+          <div
+            v-else
+            class="contenu note"
+          >
+            <div id="note" />
+          </div>
+        </div>
+      </div>
+    </div>
 
-			<!-- ── SHARE DROPDOWN ── -->
-			<div id="menu-partager" role="menu" aria-labelledby="conteneur-partage" v-if="menu">
-				<div id="conteneur-partager">
-					<label>{{ $t('lienEtCodeQR') }}</label>
-					<div id="copier-lien" class="copier">
-						<input type="text" disabled :value="definirRacine() + '#/m/' + id">
-						<span class="icone lien" role="button" :tabindex="menu ? 0 : -1" :title="$t('copierLien')" :aria-label="$t('copierLien')" @keydown.enter.space.prevent="copierLien"><i class="material-icons" aria-hidden="true">content_copy</i></span>
-						<span class="icone codeqr" role="button" :tabindex="menu ? 0 : -1" :title="$t('afficherCodeQR')" :aria-label="$t('afficherCodeQR')" @click="afficherCodeQR" @keydown.enter.space.prevent="afficherCodeQR"><i class="material-icons" aria-hidden="true">qr_code</i></span>
-					</div>
-					<label>{{ $t('codeIntegration') }}</label>
-					<div id="copier-iframe" class="copier">
-						<input type="text" disabled :value="'<iframe src=&quot;' + definirRacine() + '#/m/' + id + '&quot; allowfullscreen frameborder=&quot;0&quot; width=&quot;100%&quot; height=&quot;500&quot;></iframe>'">
-						<span class="icone" role="button" :tabindex="menu ? 0 : -1" :title="$t('copierCode')" :aria-label="$t('copierCode')" @keydown.enter.space.prevent="copierIframe"><i class="material-icons" aria-hidden="true">content_copy</i></span>
-					</div>
-					<label>{{ $t('exporterImage') }}</label>
-					<span class="bouton" role="button" :tabindex="menu ? 0 : -1" @click="exporterImage" @keydown.enter.space.prevent="exporterImage">{{ $t('exporter') }}</span>
-					<label>{{ $t('exporterTexte') }}</label>
-					<span class="bouton" role="button" :tabindex="menu ? 0 : -1" @click="exporterTexte" @keydown.enter.space.prevent="exporterTexte">{{ $t('exporter') }}</span>
-					<p class="credits">{{ $t('creeeAvec') }}<a href="https://github.com/mindmymap/mindmymap" target="_blank" rel="noreferrer"><u>MindMyMap</u></a></p>
-				</div>
-			</div>
+    <!-- ── MODALS ── -->
 
-			<!-- ── NOTES PANEL ── -->
-			<div id="notes" class="menu droite" v-if="notes" role="menu">
-				<header>
-					<span class="titre">{{ $t('notesItem') }}</span>
-					<span class="fermer" role="button" :tabindex="notes ? 0 : -1" :title="$t('fermer')" :aria-label="$t('fermer')" @click="fermerNotes" @keydown.enter.space.prevent="fermerNotes"><i class="material-icons" aria-hidden="true">close</i></span>
-				</header>
-				<div class="conteneur">
-					<div class="contenu" v-if="admin">
-						<div id="texte" />
-						<input id="couleur-texte" type="color" value="#000000" style="display:none">
-					</div>
-					<div class="contenu note" v-else>
-						<div id="note" />
-					</div>
-				</div>
-			</div>
-		</div>
+    <!-- Keyboard shortcuts -->
+    <div
+      v-if="modale === 'aide'"
+      class="conteneur-modale"
+    >
+      <div
+        id="aide"
+        class="modale"
+        role="dialog"
+      >
+        <header>
+          <span class="titre">{{ $t('raccourcisClavier') }}</span>
+          <span
+            class="fermer"
+            role="button"
+            :tabindex="definirTabIndexModale()"
+            :title="$t('fermer')"
+            :aria-label="$t('fermer')"
+            @click="fermerModale"
+            @keydown.enter.space.prevent="fermerModale"
+          ><i
+            class="material-icons"
+            aria-hidden="true"
+          >close</i></span>
+        </header>
+        <div class="conteneur">
+          <div class="contenu">
+            <label>{{ $t('naviguer') }}</label>
+            <p v-html="$t('racDeplacerCarte')" /><p v-html="$t('racSelectionnerElement')" /><p v-html="$t('racSelectionnerRacine')" />
+            <p v-html="$t('racSelectionnerParent')" /><p v-html="$t('racZoomer')" /><p v-html="$t('racPlier')" /><p v-html="$t('racNotes')" />
+            <label>{{ $t('manipuler') }}</label>
+            <p v-html="$t('racDefaire')" /><p v-html="$t('racInsererElementParallele')" /><p v-html="$t('racInsererEnfant')" />
+            <p v-html="$t('racChangerPosition')" /><p v-html="$t('racChangerCote')" /><p v-html="$t('racSupprimerElement')" />
+            <p v-html="$t('racCopierElement')" /><p v-html="$t('racCouperElement')" /><p v-html="$t('racCollerElement')" />
+            <label>{{ $t('modifier') }}</label>
+            <p v-html="$t('racModifierStatut')" /><p v-html="$t('racModifierTexte')" /><p v-html="$t('racInsererLigne')" />
+            <p v-html="$t('racMettreGras')" /><p v-html="$t('racMettreIntalique')" /><p v-html="$t('racSouligner')" /><p v-html="$t('racBarrer')" />
+          </div>
+        </div>
+      </div>
+    </div>
 
-		<!-- ── MODALS ── -->
+    <!-- Login -->
+    <div
+      v-else-if="modale === 'connexion'"
+      class="conteneur-modale"
+    >
+      <div
+        class="modale"
+        role="dialog"
+      >
+        <header>
+          <span class="titre">{{ $t('connexion') }}</span>
+          <span
+            class="fermer"
+            role="button"
+            :tabindex="definirTabIndexModale()"
+            :title="$t('fermer')"
+            :aria-label="$t('fermer')"
+            @click="fermerModaleConnexion"
+            @keydown.enter.space.prevent="fermerModaleConnexion"
+          ><i
+            class="material-icons"
+            aria-hidden="true"
+          >close</i></span>
+        </header>
+        <div class="conteneur">
+          <div
+            class="contenu"
+            role="form"
+            :aria-label="$t('connexion')"
+          >
+            <label for="question-secrete">{{ $t('questionSecrete') }}</label>
+            <select
+              id="question-secrete"
+              :value="question"
+              @change="question = $event.target.value"
+            >
+              <option
+                value=""
+                selected
+              >
+                —
+              </option>
+              <option
+                v-for="(item, index) in questions"
+                :key="'option_' + index"
+                :value="item"
+              >
+                {{ $t(item) }}
+              </option>
+            </select>
+            <label for="reponse-secrete">{{ $t('reponseSecrete') }}</label>
+            <div id="conteneur-reponse-secrete">
+              <input
+                id="reponse-secrete"
+                :type="reponseVisible ? 'text' : 'password'"
+                :value="reponse"
+                @input="reponse = $event.target.value"
+                @keydown.enter="debloquerCarte"
+              >
+              <span
+                class="icone"
+                role="button"
+                :tabindex="definirTabIndexModale()"
+                :title="reponseVisible ? $t('masquer') : $t('afficher')"
+                :aria-label="reponseVisible ? $t('masquer') : $t('afficher')"
+                @click="modifierReponseVisible(!reponseVisible)"
+                @keydown.enter.space.prevent="modifierReponseVisible(!reponseVisible)"
+              ><i
+                class="material-icons"
+                aria-hidden="true"
+              >{{ reponseVisible ? 'visibility_off' : 'visibility' }}</i></span>
+            </div>
+            <div class="actions">
+              <span
+                class="bouton"
+                role="button"
+                :tabindex="definirTabIndexModale()"
+                @click="debloquerCarte"
+                @keydown.enter.space.prevent="debloquerCarte"
+              >{{ $t('valider') }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-		<!-- Keyboard shortcuts -->
-		<div class="conteneur-modale" v-if="modale === 'aide'">
-			<div id="aide" class="modale" role="dialog">
-				<header>
-					<span class="titre">{{ $t('raccourcisClavier') }}</span>
-					<span class="fermer" role="button" :tabindex="definirTabIndexModale()" :title="$t('fermer')" :aria-label="$t('fermer')" @click="fermerModale" @keydown.enter.space.prevent="fermerModale"><i class="material-icons" aria-hidden="true">close</i></span>
-				</header>
-				<div class="conteneur">
-					<div class="contenu">
-						<label>{{ $t('naviguer') }}</label>
-						<p v-html="$t('racDeplacerCarte')" /><p v-html="$t('racSelectionnerElement')" /><p v-html="$t('racSelectionnerRacine')" />
-						<p v-html="$t('racSelectionnerParent')" /><p v-html="$t('racZoomer')" /><p v-html="$t('racPlier')" /><p v-html="$t('racNotes')" />
-						<label>{{ $t('manipuler') }}</label>
-						<p v-html="$t('racDefaire')" /><p v-html="$t('racInsererElementParallele')" /><p v-html="$t('racInsererEnfant')" />
-						<p v-html="$t('racChangerPosition')" /><p v-html="$t('racChangerCote')" /><p v-html="$t('racSupprimerElement')" />
-						<p v-html="$t('racCopierElement')" /><p v-html="$t('racCouperElement')" /><p v-html="$t('racCollerElement')" />
-						<label>{{ $t('modifier') }}</label>
-						<p v-html="$t('racModifierStatut')" /><p v-html="$t('racModifierTexte')" /><p v-html="$t('racInsererLigne')" />
-						<p v-html="$t('racMettreGras')" /><p v-html="$t('racMettreIntalique')" /><p v-html="$t('racSouligner')" /><p v-html="$t('racBarrer')" />
-					</div>
-				</div>
-			</div>
-		</div>
+    <!-- Settings, rename, access, import, delete -->
+    <div
+      v-else-if="modale === 'carte' || modale === 'modifier-nom' || modale === 'modifier-acces' || modale === 'importer' || modale === 'supprimer-carte'"
+      class="conteneur-modale"
+    >
+      <div
+        v-if="modale === 'carte'"
+        id="modale-parametres"
+        class="modale"
+        role="dialog"
+      >
+        <header>
+          <span class="titre">{{ $t('parametresCarte') }}</span>
+          <span
+            class="fermer"
+            role="button"
+            :tabindex="definirTabIndexModale()"
+            :title="$t('fermer')"
+            :aria-label="$t('fermer')"
+            @click="fermerModaleCarte"
+            @keydown.enter.space.prevent="fermerModaleCarte"
+          ><i
+            class="material-icons"
+            aria-hidden="true"
+          >close</i></span>
+        </header>
+        <div class="conteneur">
+          <div class="contenu">
+            <div class="langue">
+              <span
+                role="button"
+                :tabindex="definirTabIndexModale()"
+                title="Français"
+                aria-label="Français"
+                :class="{'selectionne': $parent.$parent.langue === 'fr'}"
+                @click="modifierLangue('fr')"
+                @keydown.enter.space.prevent="modifierLangue('fr')"
+              >FR</span>
+              <span
+                role="button"
+                :tabindex="definirTabIndexModale()"
+                title="Italiano"
+                aria-label="Italiano"
+                :class="{'selectionne': $parent.$parent.langue === 'it'}"
+                @click="modifierLangue('it')"
+                @keydown.enter.space.prevent="modifierLangue('it')"
+              >IT</span>
+              <span
+                role="button"
+                :tabindex="definirTabIndexModale()"
+                title="English"
+                aria-label="English"
+                :class="{'selectionne': $parent.$parent.langue === 'en'}"
+                @click="modifierLangue('en')"
+                @keydown.enter.space.prevent="modifierLangue('en')"
+              >EN</span>
+            </div>
+            <span class="vues"><b>{{ $t('nombreVues') }}</b> {{ vues }}</span>
+            <span
+              v-if="!digidrive"
+              class="bouton large"
+              role="button"
+              :tabindex="definirTabIndexModale()"
+              @click="ouvrirModaleNomCarte"
+              @keydown.enter.space.prevent="ouvrirModaleNomCarte"
+            >{{ $t('modifierNomCarte') }}</span>
+            <span
+              v-if="!digidrive"
+              class="bouton large"
+              role="button"
+              :tabindex="definirTabIndexModale()"
+              @click="ouvrirModaleAccesCarte"
+              @keydown.enter.space.prevent="ouvrirModaleAccesCarte"
+            >{{ $t('modifierAccesCarte') }}</span>
+            <span
+              class="bouton large"
+              role="button"
+              :tabindex="definirTabIndexModale()"
+              @click="exporterCarte"
+              @keydown.enter.space.prevent="exporterCarte"
+            >{{ $t('exporterCarte') }}</span>
+            <span
+              class="bouton large"
+              role="button"
+              :tabindex="definirTabIndexModale()"
+              @click="ouvrirModaleImporter"
+              @keydown.enter.space.prevent="ouvrirModaleImporter"
+            >{{ $t('importerCarte') }}</span>
+            <span
+              v-if="!digidrive"
+              class="bouton large rouge"
+              role="button"
+              :tabindex="definirTabIndexModale()"
+              @click="afficherSupprimerCarte"
+              @keydown.enter.space.prevent="afficherSupprimerCarte"
+            >{{ $t('supprimerCarte') }}</span>
+            <span
+              class="bouton large secondary"
+              role="button"
+              :tabindex="definirTabIndexModale()"
+              @click="terminerSession"
+              @keydown.enter.space.prevent="terminerSession"
+            >{{ $t('terminerSession') }}</span>
+          </div>
+        </div>
+      </div>
 
-		<!-- Login -->
-		<div class="conteneur-modale" v-else-if="modale === 'connexion'">
-			<div class="modale" role="dialog">
-				<header>
-					<span class="titre">{{ $t('connexion') }}</span>
-					<span class="fermer" role="button" :tabindex="definirTabIndexModale()" :title="$t('fermer')" :aria-label="$t('fermer')" @click="fermerModaleConnexion" @keydown.enter.space.prevent="fermerModaleConnexion"><i class="material-icons" aria-hidden="true">close</i></span>
-				</header>
-				<div class="conteneur">
-					<div class="contenu" role="form" :aria-label="$t('connexion')">
-						<label for="question-secrete">{{ $t('questionSecrete') }}</label>
-						<select id="question-secrete" :value="question" @change="question = $event.target.value">
-							<option value="" selected>—</option>
-							<option v-for="(item, index) in questions" :value="item" :key="'option_' + index">{{ $t(item) }}</option>
-						</select>
-						<label for="reponse-secrete">{{ $t('reponseSecrete') }}</label>
-						<div id="conteneur-reponse-secrete">
-							<input id="reponse-secrete" :type="reponseVisible ? 'text' : 'password'" :value="reponse" @input="reponse = $event.target.value" @keydown.enter="debloquerCarte">
-							<span class="icone" role="button" :tabindex="definirTabIndexModale()" :title="reponseVisible ? $t('masquer') : $t('afficher')" :aria-label="reponseVisible ? $t('masquer') : $t('afficher')" @click="modifierReponseVisible(!reponseVisible)" @keydown.enter.space.prevent="modifierReponseVisible(!reponseVisible)"><i class="material-icons" aria-hidden="true">{{ reponseVisible ? 'visibility_off' : 'visibility' }}</i></span>
-						</div>
-						<div class="actions">
-							<span class="bouton" role="button" :tabindex="definirTabIndexModale()" @click="debloquerCarte" @keydown.enter.space.prevent="debloquerCarte">{{ $t('valider') }}</span>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
+      <div
+        v-else-if="modale === 'modifier-nom'"
+        class="modale"
+        role="dialog"
+      >
+        <header>
+          <span class="titre">{{ $t('modifierNomCarte') }}</span>
+          <span
+            class="fermer"
+            role="button"
+            :tabindex="definirTabIndexModale()"
+            :title="$t('fermer')"
+            :aria-label="$t('fermer')"
+            @click="fermerModaleNomCarte"
+            @keydown.enter.space.prevent="fermerModaleNomCarte"
+          ><i
+            class="material-icons"
+            aria-hidden="true"
+          >close</i></span>
+        </header>
+        <div class="conteneur">
+          <div
+            class="contenu"
+            role="form"
+            :aria-label="$t('modifierNomCarte')"
+          >
+            <label for="nouveau-nom">{{ $t('nouveauNom') }}</label>
+            <input
+              id="nouveau-nom"
+              type="text"
+              :value="nouveaunom"
+              @input="nouveaunom = $event.target.value"
+              @keydown.enter="modifierNomCarte"
+            >
+            <div class="actions">
+              <span
+                class="bouton"
+                role="button"
+                :tabindex="definirTabIndexModale()"
+                @click="modifierNomCarte"
+                @keydown.enter.space.prevent="modifierNomCarte"
+              >{{ $t('modifier') }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
 
-		<!-- Settings, rename, access, import, delete -->
-		<div class="conteneur-modale" v-else-if="modale === 'carte' || modale === 'modifier-nom' || modale === 'modifier-acces' || modale === 'importer' || modale === 'supprimer-carte'">
-			<div id="modale-parametres" class="modale" role="dialog" v-if="modale === 'carte'">
-				<header>
-					<span class="titre">{{ $t('parametresCarte') }}</span>
-					<span class="fermer" role="button" :tabindex="definirTabIndexModale()" :title="$t('fermer')" :aria-label="$t('fermer')" @click="fermerModaleCarte" @keydown.enter.space.prevent="fermerModaleCarte"><i class="material-icons" aria-hidden="true">close</i></span>
-				</header>
-				<div class="conteneur">
-					<div class="contenu">
-						<div class="langue">
-							<span role="button" :tabindex="definirTabIndexModale()" title="Français" aria-label="Français" :class="{'selectionne': $parent.$parent.langue === 'fr'}" @click="modifierLangue('fr')" @keydown.enter.space.prevent="modifierLangue('fr')">FR</span>
-							<span role="button" :tabindex="definirTabIndexModale()" title="Italiano" aria-label="Italiano" :class="{'selectionne': $parent.$parent.langue === 'it'}" @click="modifierLangue('it')" @keydown.enter.space.prevent="modifierLangue('it')">IT</span>
-							<span role="button" :tabindex="definirTabIndexModale()" title="English" aria-label="English" :class="{'selectionne': $parent.$parent.langue === 'en'}" @click="modifierLangue('en')" @keydown.enter.space.prevent="modifierLangue('en')">EN</span>
-						</div>
-						<span class="vues"><b>{{ $t('nombreVues') }}</b> {{ vues }}</span>
-						<span class="bouton large" role="button" :tabindex="definirTabIndexModale()" @click="ouvrirModaleNomCarte" @keydown.enter.space.prevent="ouvrirModaleNomCarte" v-if="!digidrive">{{ $t('modifierNomCarte') }}</span>
-						<span class="bouton large" role="button" :tabindex="definirTabIndexModale()" @click="ouvrirModaleAccesCarte" @keydown.enter.space.prevent="ouvrirModaleAccesCarte" v-if="!digidrive">{{ $t('modifierAccesCarte') }}</span>
-						<span class="bouton large" role="button" :tabindex="definirTabIndexModale()" @click="exporterCarte" @keydown.enter.space.prevent="exporterCarte">{{ $t('exporterCarte') }}</span>
-						<span class="bouton large" role="button" :tabindex="definirTabIndexModale()" @click="ouvrirModaleImporter" @keydown.enter.space.prevent="ouvrirModaleImporter">{{ $t('importerCarte') }}</span>
-						<span class="bouton large rouge" role="button" :tabindex="definirTabIndexModale()" @click="afficherSupprimerCarte" @keydown.enter.space.prevent="afficherSupprimerCarte" v-if="!digidrive">{{ $t('supprimerCarte') }}</span>
-						<span class="bouton large secondary" role="button" :tabindex="definirTabIndexModale()" @click="terminerSession" @keydown.enter.space.prevent="terminerSession">{{ $t('terminerSession') }}</span>
-					</div>
-				</div>
-			</div>
+      <div
+        v-else-if="modale === 'modifier-acces'"
+        class="modale"
+        role="dialog"
+      >
+        <header>
+          <span class="titre">{{ $t('modifierAccesCarte') }}</span>
+          <span
+            class="fermer"
+            role="button"
+            :tabindex="definirTabIndexModale()"
+            :title="$t('fermer')"
+            :aria-label="$t('fermer')"
+            @click="fermerModaleAccesCarte"
+            @keydown.enter.space.prevent="fermerModaleAccesCarte"
+          ><i
+            class="material-icons"
+            aria-hidden="true"
+          >close</i></span>
+        </header>
+        <div class="conteneur">
+          <div
+            class="contenu"
+            role="form"
+            :aria-label="$t('modifierAccesCarte')"
+          >
+            <label for="question-secrete">{{ $t('questionSecreteActuelle') }}</label>
+            <select
+              id="question-secrete"
+              :value="question"
+              @change="question = $event.target.value"
+            >
+              <option
+                value=""
+                selected
+              >
+                —
+              </option>
+              <option
+                v-for="(item, index) in questions"
+                :key="'option_' + index"
+                :value="item"
+              >
+                {{ $t(item) }}
+              </option>
+            </select>
+            <label for="reponse-secrete">{{ $t('reponseSecreteActuelle') }}</label>
+            <input
+              id="reponse-secrete"
+              type="text"
+              :value="reponse"
+              @input="reponse = $event.target.value"
+            >
+            <label for="nouvelle-question-secrete">{{ $t('nouvelleQuestionSecrete') }}</label>
+            <select
+              id="nouvelle-question-secrete"
+              :value="nouvellequestion"
+              @change="nouvellequestion = $event.target.value"
+            >
+              <option
+                value=""
+                selected
+              >
+                —
+              </option>
+              <option
+                v-for="(item, index) in questions"
+                :key="'option_' + index"
+                :value="item"
+              >
+                {{ $t(item) }}
+              </option>
+            </select>
+            <label for="nouvelle-reponse-secrete">{{ $t('nouvelleReponseSecrete') }}</label>
+            <input
+              id="nouvelle-reponse-secrete"
+              type="text"
+              :value="nouvellereponse"
+              @input="nouvellereponse = $event.target.value"
+              @keydown.enter="modifierAccesCarte"
+            >
+            <div class="actions">
+              <span
+                class="bouton"
+                role="button"
+                :tabindex="definirTabIndexModale()"
+                @click="modifierAccesCarte"
+                @keydown.enter.space.prevent="modifierAccesCarte"
+              >{{ $t('modifier') }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
 
-			<div class="modale" role="dialog" v-else-if="modale === 'modifier-nom'">
-				<header>
-					<span class="titre">{{ $t('modifierNomCarte') }}</span>
-					<span class="fermer" role="button" :tabindex="definirTabIndexModale()" :title="$t('fermer')" :aria-label="$t('fermer')" @click="fermerModaleNomCarte" @keydown.enter.space.prevent="fermerModaleNomCarte"><i class="material-icons" aria-hidden="true">close</i></span>
-				</header>
-				<div class="conteneur">
-					<div class="contenu" role="form" :aria-label="$t('modifierNomCarte')">
-						<label for="nouveau-nom">{{ $t('nouveauNom') }}</label>
-						<input id="nouveau-nom" type="text" :value="nouveaunom" @input="nouveaunom = $event.target.value" @keydown.enter="modifierNomCarte">
-						<div class="actions">
-							<span class="bouton" role="button" :tabindex="definirTabIndexModale()" @click="modifierNomCarte" @keydown.enter.space.prevent="modifierNomCarte">{{ $t('modifier') }}</span>
-						</div>
-					</div>
-				</div>
-			</div>
+      <div
+        v-else-if="modale === 'importer'"
+        class="modale"
+        role="dialog"
+      >
+        <header>
+          <span class="titre">{{ $t('importerCarte') }}</span>
+          <span
+            class="fermer"
+            role="button"
+            :tabindex="definirTabIndexModale()"
+            :title="$t('fermer')"
+            :aria-label="$t('fermer')"
+            @click="modale = ''"
+            @keydown.enter.space.prevent="modale = ''"
+          ><i
+            class="material-icons"
+            aria-hidden="true"
+          >close</i></span>
+        </header>
+        <div class="conteneur">
+          <div class="contenu">
+            <p style="font-size:1.4rem;color:var(--gray-600);line-height:1.6">
+              {{ $t('alerteImporter') }}
+            </p>
+            <input
+              id="importer"
+              type="file"
+              name="importer"
+              style="display:none"
+              accept=".dgm"
+              @change="importerCarte"
+            >
+            <label
+              for="importer"
+              class="bouton large"
+              :tabindex="definirTabIndexModale()"
+              @keydown.enter.space.prevent="activerInput('importer')"
+            >{{ $t('selectionnerFichier') }}</label>
+          </div>
+        </div>
+      </div>
 
-			<div class="modale" role="dialog" v-else-if="modale === 'modifier-acces'">
-				<header>
-					<span class="titre">{{ $t('modifierAccesCarte') }}</span>
-					<span class="fermer" role="button" :tabindex="definirTabIndexModale()" :title="$t('fermer')" :aria-label="$t('fermer')" @click="fermerModaleAccesCarte" @keydown.enter.space.prevent="fermerModaleAccesCarte"><i class="material-icons" aria-hidden="true">close</i></span>
-				</header>
-				<div class="conteneur">
-					<div class="contenu" role="form" :aria-label="$t('modifierAccesCarte')">
-						<label for="question-secrete">{{ $t('questionSecreteActuelle') }}</label>
-						<select id="question-secrete" :value="question" @change="question = $event.target.value">
-							<option value="" selected>—</option>
-							<option v-for="(item, index) in questions" :value="item" :key="'option_' + index">{{ $t(item) }}</option>
-						</select>
-						<label for="reponse-secrete">{{ $t('reponseSecreteActuelle') }}</label>
-						<input id="reponse-secrete" type="text" :value="reponse" @input="reponse = $event.target.value">
-						<label for="nouvelle-question-secrete">{{ $t('nouvelleQuestionSecrete') }}</label>
-						<select id="nouvelle-question-secrete" :value="nouvellequestion" @change="nouvellequestion = $event.target.value">
-							<option value="" selected>—</option>
-							<option v-for="(item, index) in questions" :value="item" :key="'option_' + index">{{ $t(item) }}</option>
-						</select>
-						<label for="nouvelle-reponse-secrete">{{ $t('nouvelleReponseSecrete') }}</label>
-						<input id="nouvelle-reponse-secrete" type="text" :value="nouvellereponse" @input="nouvellereponse = $event.target.value" @keydown.enter="modifierAccesCarte">
-						<div class="actions">
-							<span class="bouton" role="button" :tabindex="definirTabIndexModale()" @click="modifierAccesCarte" @keydown.enter.space.prevent="modifierAccesCarte">{{ $t('modifier') }}</span>
-						</div>
-					</div>
-				</div>
-			</div>
+      <div
+        v-else-if="modale === 'supprimer-carte'"
+        class="modale confirmation"
+        role="dialog"
+      >
+        <div class="conteneur entier">
+          <div class="contenu">
+            <p v-html="$t('confirmationSupprimerCarte')" />
+            <div class="actions">
+              <span
+                class="bouton secondary"
+                role="button"
+                :tabindex="definirTabIndexModale()"
+                @click="fermerModale"
+                @keydown.enter.space.prevent="fermerModale"
+              >{{ $t('non') }}</span>
+              <span
+                class="bouton rouge"
+                role="button"
+                :tabindex="definirTabIndexModale()"
+                @click="supprimerCarte"
+                @keydown.enter.space.prevent="supprimerCarte"
+              >{{ $t('oui') }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-			<div class="modale" role="dialog" v-else-if="modale === 'importer'">
-				<header>
-					<span class="titre">{{ $t('importerCarte') }}</span>
-					<span class="fermer" role="button" :tabindex="definirTabIndexModale()" :title="$t('fermer')" :aria-label="$t('fermer')" @click="modale = ''" @keydown.enter.space.prevent="modale = ''"><i class="material-icons" aria-hidden="true">close</i></span>
-				</header>
-				<div class="conteneur">
-					<div class="contenu">
-						<p style="font-size:1.4rem;color:var(--gray-600);line-height:1.6">{{ $t('alerteImporter') }}</p>
-						<input type="file" id="importer" name="importer" style="display:none" accept=".dgm" @change="importerCarte">
-						<label for="importer" class="bouton large" :tabindex="definirTabIndexModale()" @keydown.enter.space.prevent="activerInput('importer')">{{ $t('selectionnerFichier') }}</label>
-					</div>
-				</div>
-			</div>
+    <!-- QR code -->
+    <div
+      v-else-if="modale === 'code-qr'"
+      class="conteneur-modale"
+    >
+      <div
+        id="codeqr"
+        class="modale"
+        role="dialog"
+      >
+        <header>
+          <span class="titre">{{ $t('codeQR') }}</span>
+          <span
+            class="fermer"
+            role="button"
+            tabindex="0"
+            :title="$t('fermer')"
+            :aria-label="$t('fermer')"
+            @click="fermerModale"
+            @keydown.enter.space.prevent="fermerModale"
+          ><i
+            class="material-icons"
+            aria-hidden="true"
+          >close</i></span>
+        </header>
+        <div class="conteneur">
+          <div class="contenu">
+            <div id="qr" />
+          </div>
+        </div>
+      </div>
+    </div>
 
-			<div class="modale confirmation" role="dialog" v-else-if="modale === 'supprimer-carte'">
-				<div class="conteneur entier">
-					<div class="contenu">
-						<p v-html="$t('confirmationSupprimerCarte')" />
-						<div class="actions">
-							<span class="bouton secondary" role="button" :tabindex="definirTabIndexModale()" @click="fermerModale" @keydown.enter.space.prevent="fermerModale">{{ $t('non') }}</span>
-							<span class="bouton rouge" role="button" :tabindex="definirTabIndexModale()" @click="supprimerCarte" @keydown.enter.space.prevent="supprimerCarte">{{ $t('oui') }}</span>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<!-- QR code -->
-		<div class="conteneur-modale" v-else-if="modale === 'code-qr'">
-			<div id="codeqr" class="modale" role="dialog">
-				<header>
-					<span class="titre">{{ $t('codeQR') }}</span>
-					<span class="fermer" role="button" tabindex="0" :title="$t('fermer')" :aria-label="$t('fermer')" @click="fermerModale" @keydown.enter.space.prevent="fermerModale"><i class="material-icons" aria-hidden="true">close</i></span>
-				</header>
-				<div class="conteneur">
-					<div class="contenu">
-						<div id="qr" />
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<Emojis v-if="emojis" @emoji="modifierEmoji" />
-	</div>
+    <Emojis
+      v-if="emojis"
+      @emoji="modifierEmoji"
+    />
+  </div>
 </template>
 
 <script>
@@ -496,7 +1251,7 @@ export default {
 			this.modale = 'code-qr'
 			this.$nextTick(function () {
 				const lien = this.definirRacine() + '#/m/' + this.id
-				// eslint-disable-next-line
+				 
 				this.codeqr = new QRCode('qr', { text: lien, width: 320, height: 320, colorDark: '#000000', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.H })
 				document.querySelector('#codeqr .fermer').focus()
 			}.bind(this))
