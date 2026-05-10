@@ -207,7 +207,7 @@ jobs:
           body: |
             ## MindMyMap ${{ github.ref_name }}
 
-            Free, open-source, ad-free mind mapping — inspired by GitMind, built on Digimindmap by La Digitale.
+            Free, open-source, ad-free mind mapping - inspired by GitMind, built on Digimindmap by La Digitale.
 
             | Package | Platform |
             |---|---|
@@ -218,7 +218,7 @@ jobs:
             | `*.exe` | Windows desktop |
             | `*.dmg` | macOS desktop |
 
-            **AGPL-3.0** — Based on [Digimindmap by La Digitale](https://ladigitale.dev/digimindmap/). Inspired by [GitMind](https://gitmind.com).
+            **AGPL-3.0** - Based on [Digimindmap by La Digitale](https://ladigitale.dev/digimindmap/). Inspired by [GitMind](https://gitmind.com).
           files: all-artifacts/*
           fail_on_unmatched_files: false
         env:

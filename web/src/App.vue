@@ -62,8 +62,6 @@ export default {
 	name: 'App',
 	data () {
 		return {
-			// hote: base URL for API calls. On InfinityFree this resolves to
-			// https://yourname.infinityfreeapp.com/ — always relative, never hard-coded.
 			hote: '',
 			chargement: true,
 			chargementTransparent: false,
@@ -99,7 +97,7 @@ export default {
 	created () {
 		// Derive base URL relative to wherever the app is hosted.
 		// Works for InfinityFree subdomains, custom domains, and localhost alike.
-		this.hote = window.location.href.split('#')[0].replace(/\/?$/, '/')
+		this.hote = window.location.origin + '/'
 	},
 	methods: {
 		fermerMessage () {

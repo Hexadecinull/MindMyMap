@@ -293,7 +293,7 @@
                 value="Underline"
                 :selected="forme === 'Underline'"
               >
-                —
+                -
               </option>
             </select>
           </div>
@@ -660,7 +660,7 @@
                 value=""
                 selected
               >
-                —
+                -
               </option>
               <option
                 v-for="(item, index) in questions"
@@ -896,7 +896,7 @@
                 value=""
                 selected
               >
-                —
+                -
               </option>
               <option
                 v-for="(item, index) in questions"
@@ -910,6 +910,7 @@
             <input
               id="reponse-secrete"
               type="text"
+              autocomplete="off"
               :value="reponse"
               @input="reponse = $event.target.value"
             >
@@ -923,7 +924,7 @@
                 value=""
                 selected
               >
-                —
+                -
               </option>
               <option
                 v-for="(item, index) in questions"
@@ -937,6 +938,7 @@
             <input
               id="nouvelle-reponse-secrete"
               type="text"
+              autocomplete="off"
               :value="nouvellereponse"
               @input="nouvellereponse = $event.target.value"
               @keydown.enter="modifierAccesCarte"
@@ -1147,7 +1149,7 @@ export default {
 				}
 				this.digidrive = Boolean(reponse.digidrive)
 				setTimeout(function () {
-					document.title = this.nom + ' — MindMyMap'
+					document.title = this.nom + ' - MindMyMap'
 					this.$parent.$parent.chargement = false
 					this.donnees = MM.App.map.toJSON()
 					if (this.integration === true) { this.admin = false }
@@ -1503,7 +1505,7 @@ export default {
 						else if (xhr.responseText === 'non_autorise') { this.fermerModaleNomCarte(); this.$parent.$parent.message = this.$t('actionNonAutorisee') }
 						else if (xhr.responseText === 'nom_modifie') {
 							this.nom = this.nouveaunom; this.$parent.$parent.notification = this.$t('nomModifie')
-							document.title = this.nom + ' — MindMyMap'; this.fermerModaleNomCarte()
+							document.title = this.nom + ' - MindMyMap'; this.fermerModaleNomCarte()
 						}
 					} else { this.$parent.$parent.chargement = false; this.fermerModaleNomCarte(); this.$parent.$parent.message = this.$t('erreurServeur') }
 				}.bind(this)

@@ -13,7 +13,7 @@ cd mindmymap
 # Web app
 cd web && npm ci && cp .env.example .env && npm run dev
 
-# In another terminal — PHP dev server
+# In another terminal - PHP dev server
 cd web && php -S 127.0.0.1:8000
 ```
 
@@ -28,7 +28,7 @@ web/src/
   views/Home.vue      Landing page (GitMind-inspired dark hero)
   views/Editor.vue    Mind map editor (dark sidebar + white topbar)
   assets/css/style.css  All global styles (CSS custom properties)
-  lang/en.json        English strings — add keys here first
+  lang/en.json        English strings - add keys here first
   lang/fr.json        French strings
   lang/it.json        Italian strings
 
@@ -48,8 +48,8 @@ extension/
 
 | Branch | Purpose |
 |--------|---------|
-| `main` | Production — auto-deploys to InfinityFree |
-| `feat/*` | New features — open PR against `main` |
+| `main` | Production - auto-deploys to InfinityFree |
+| `feat/*` | New features - open PR against `main` |
 | `fix/*` | Bug fixes |
 | `chore/*` | Maintenance (deps, CI, docs) |
 
@@ -72,7 +72,7 @@ docs: update InfinityFree deploy instructions
 2. Translate every value (keep all keys identical)
 3. Register it in `web/src/lang/index.js`
 4. Add the toggle button in `web/src/views/Home.vue` and `web/src/views/Editor.vue`
-5. Open a PR — that's it!
+5. Open a PR - that's it!
 
 ---
 

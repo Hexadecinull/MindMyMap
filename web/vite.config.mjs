@@ -30,7 +30,7 @@ export default defineConfig(({ mode }) => {
   const copyDotfilesAndInjectScripts = {
     name: 'copy-dotfiles-and-inject-scripts',
 
-    // Dev server only — for builds, closeBundle handles injection instead.
+    // Dev server only - for builds, closeBundle handles injection instead.
     // ctx.bundle is undefined during dev; defined during build.
     transformIndexHtml: {
       order: 'post',
@@ -60,7 +60,7 @@ export default defineConfig(({ mode }) => {
         if (fs.existsSync(localEnv)) {
           fs.copyFileSync(localEnv, path.join(outDir, '.env'))
         } else {
-          console.warn('[vite] No .env found — skipping (CI writes it to dist/ directly).')
+          console.warn('[vite] No .env found - skipping (CI writes it to dist/ directly).')
         }
       }
 

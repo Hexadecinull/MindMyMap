@@ -1,5 +1,5 @@
 /**
- * MindMyMap Desktop — Electron main process
+ * MindMyMap Desktop - Electron main process
  * AGPL-3.0 | Based on Digimindmap by La Digitale | Inspired by GitMind
  */
 

@@ -9,7 +9,7 @@
 MindMyMap is a lightweight, self-hostable mind mapping tool with a GitMind-inspired interface,
 built on top of [Digimindmap by La Digitale](https://ladigitale.dev/digimindmap/).
 It exists because GitMind is undergoing significant negative changes.
-MindMyMap fills that gap — permanently.
+MindMyMap fills that gap - permanently.
 
 ---
 
@@ -57,7 +57,7 @@ mindmymap/
 ## 🚀 Self-hosting on InfinityFree
 
 InfinityFree gives you a free subdomain (`mindmymap.ct.ws`) with PHP 8
-and Apache — perfect for MindMyMap.
+and Apache - perfect for MindMyMap.
 
 ### One-time setup
 
@@ -72,7 +72,7 @@ and Apache — perfect for MindMyMap.
    | `FTP_USER` | Your FTP username |
    | `FTP_PASS` | Your FTP password |
    
-6. **Push to `main`** — the Deploy workflow builds and FTP-uploads automatically.
+6. **Push to `main`** - the Deploy workflow builds and FTP-uploads automatically.
 7. **On the server**, copy `.env.example` → `.env` via the InfinityFree file manager
    (or upload it via FTP). The SQLite database creates itself on the first request.
 
@@ -97,7 +97,7 @@ npm ci
 cp .env.example .env
 npm run dev        # Vite dev server on :8080, proxies /inc/* to :8000
 
-# In a separate terminal — PHP backend
+# In a separate terminal - PHP backend
 cd web
 php -S 127.0.0.1:8000
 ```
@@ -125,11 +125,11 @@ On first launch set your server URL: **File → Server → Change Server URL…*
 
 ## 📱 Mobile (PWA)
 
-MindMyMap ships a `manifest.json` — no app store needed:
+MindMyMap ships a `manifest.json` - no app store needed:
 
 1. Open your MindMyMap URL in Chrome (Android) or Safari (iOS)
 2. Tap **Add to Home Screen**
-3. Done — it launches full-screen like a native app
+3. Done - it launches full-screen like a native app
 
 ---
 
@@ -176,10 +176,10 @@ extension/
 
 ## 🔐 Privacy
 
-- **No tracking** — zero analytics, zero telemetry
-- **No ads** — ever
-- **No account** — maps protected by a secret Q&A
-- **Self-hosted** — your data lives on your server only
+- **No tracking** - zero analytics, zero telemetry
+- **No ads** - ever
+- **No account** - maps protected by a secret Q&A
+- **Self-hosted** - your data lives on your server only
 
 ---
 
@@ -227,10 +227,10 @@ See [LICENSE](./LICENSE) for full text.
 
 ## 🙏 Credits
 
-- **[Digimindmap by La Digitale](https://ladigitale.dev/digimindmap/)** — the original AGPL-3.0 codebase this project is forked from. Thank you, Emmanuel ZIMMERT and the La Digitale team.
-- **[GitMind](https://gitmind.com)** — the UI/UX that inspired MindMyMap's redesign.
+- **[Digimindmap by La Digitale](https://ladigitale.dev/digimindmap/)** - the original AGPL-3.0 codebase this project is forked from. Thank you, Emmanuel ZIMMERT and the La Digitale team.
+- **[GitMind](https://gitmind.com)** - the UI/UX that inspired MindMyMap's redesign.
 - All upstream packages listed in `web/package.json` and `desktop/package.json`.
 
 ---
 
-*MindMyMap — because mind mapping should always be free.*
+*MindMyMap - because mind mapping should always be free.*

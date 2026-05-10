@@ -1,5 +1,5 @@
 /**
- * MindMyMap Desktop — Electron preload
+ * MindMyMap Desktop - Electron preload
  * Exposes a minimal, safe API to the renderer via contextBridge.
  * AGPL-3.0 | Based on Digimindmap by La Digitale | Inspired by GitMind
  */

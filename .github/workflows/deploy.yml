@@ -64,4 +64,4 @@ jobs:
       - name: Smoke test
         run: |
           STATUS=$(curl -o /dev/null -s -w "%{http_code}" --max-time 20 https://mindmymap.ct.ws || echo "000")
-          [ "$STATUS" = "200" ] && echo "✅ Site is up." || echo "::warning::Site returned status $STATUS — it may still be propagating."
+          [ "$STATUS" = "200" ] && echo "✅ Site is up." || echo "::warning::Site returned status $STATUS - it may still be propagating."

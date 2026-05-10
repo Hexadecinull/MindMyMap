@@ -1,4 +1,4 @@
-# MindMyMap — Browser Extension
+# MindMyMap - Browser Extension
 
 Open MindMyMap in one click from any browser tab.
 
@@ -24,4 +24,4 @@ Or right-click the extension icon → **Options**.
 
 ## License
 
-AGPL-3.0 — Based on Digimindmap by La Digitale. Inspired by GitMind.
+AGPL-3.0 - Based on Digimindmap by La Digitale. Inspired by GitMind.

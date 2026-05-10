@@ -7,7 +7,7 @@ ext.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (!match) return
 
   const mapId = match[1]
-  const mapName = tab.title ? tab.title.replace(/ — MindMyMap$/, '').trim() : mapId
+  const mapName = tab.title ? tab.title.replace(/ - MindMyMap$/, '').trim() : mapId
 
   ext.storage.sync.get(['recentMaps'], res => {
     let maps = res.recentMaps || []

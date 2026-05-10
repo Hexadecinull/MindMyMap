@@ -1,6 +1,6 @@
 # MindMyMap Desktop
 
-Electron desktop app for MindMyMap — free, open-source, ad-free mind mapping.
+Electron desktop app for MindMyMap - free, open-source, ad-free mind mapping.
 
 ## Requirements
 
@@ -31,4 +31,4 @@ Change to your self-hosted server URL and it persists between launches.
 
 ## License
 
-AGPL-3.0 — Based on Digimindmap by La Digitale. Inspired by GitMind.
+AGPL-3.0 - Based on Digimindmap by La Digitale. Inspired by GitMind.

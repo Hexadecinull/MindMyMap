@@ -105,7 +105,7 @@
       <!-- Footer -->
       <footer id="accueil-footer">
         <p>
-          {{ new Date().getFullYear() }} — MindMyMap
+          {{ new Date().getFullYear() }} - MindMyMap
           <span class="sep">·</span>
           <a
             href="https://github.com/mindmymap/mindmymap"
@@ -189,7 +189,7 @@
                 value=""
                 selected
               >
-                —
+                -
               </option>
               <option
                 v-for="(item, index) in questions"
@@ -294,7 +294,7 @@ export default {
 	mounted () {
 		this.$root.$i18n.locale = this.$parent.$parent.langue
 		document.getElementsByTagName('html')[0].setAttribute('lang', this.$parent.$parent.langue)
-		document.title = 'MindMyMap — Free Mind Mapping'
+		document.title = 'MindMyMap - Free Mind Mapping'
 		setTimeout(function () {
 			this.$parent.$parent.chargement = false
 		}.bind(this), 300)
