@@ -1146,6 +1146,7 @@ export default {
 				if (reponse.donnees !== '') {
 					const donnees = JSON.parse(reponse.donnees)
 					MM.App.setMap(MM.Map.fromJSON(donnees))
+					this.$nextTick(() => MM.Command.Center.execute())
 				}
 				this.digidrive = Boolean(reponse.digidrive)
 				setTimeout(function () {
